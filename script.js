@@ -1,9 +1,7 @@
-// const num1 = '90099999999999999999999999099999999999999999999999';
-// const num2 = '99999999999999999999999999999999999999999999999999';
-// num1 = '1239';
-// num2 = '9231';
-// num1 = '92';
-// num2 = '38';
+const num1 = '90099999999999999999999999099999999999999999999999';
+const num2 = '99999999999999999999999999999999999999999999999999';
+// num1 = '9231';
+// num2 = '1239';
 
 // "plus" function implementation
 function plus(str1, str2) {
@@ -47,28 +45,57 @@ function minus(str1, str2) {
 		const digit2 = parseInt(str2[str2.length - 1 - i] || '0');
 		let subtr = digit1 - digit2 - overageValue;
 
-		subtr = subtr < 0 ? subtr + 10 : subtr;
 		overageValue = subtr < 0 ? 1 : 0;
+		subtr = subtr < 0 ? subtr + 10 : subtr;
 
 		return subtr.toString();
 	})
 		.reverse()
 		.join('');
 
-	return result.replace(/^0+/, '');
+	return result.replace(/^0+/, '') || '0';
 }
 
 const subtractionOfNumbers = minus(num1, num2);
 console.log(subtractionOfNumbers);
 
 // "multiply" function implementation
-function multiply(str1, str2) {}
+function multiply(str1, str2) {
+	const result = Array(str1.length + str2.length).fill(0);
+
+	for (let i = str1.length - 1; i >= 0; i--) {
+		for (let j = str2.length - 1; j >= 0; j--) {
+			const productNumber =
+				parseInt(str1[i]) * parseInt(str2[j]) + result[i + j + 1];
+			result[i + j] += Math.floor(productNumber / 10);
+			result[i + j + 1] = productNumber % 10;
+		}
+	}
+	return result.join('').replace(/^0+/, '') || '0';
+}
 
 const productOfNumbers = multiply(num1, num2);
 console.log(productOfNumbers);
 
 // "divide" function implementation
-function multiply(str1, str2) {}
+function divide(str1, str2) {
+	if (parseInt(str2) === 0) {
+		console.error("You can't divite by zero!");
+		return;
+	}
+
+	let overageValue = 0;
+
+	const result = Array.from({ length: str1.length }, (_, i) => {
+		const digit = parseInt(str1[i]);
+		const currentNumber = overageValue * 10 + digit;
+		const currentQuotient = Math.floor(currentNumber / parseInt(str2));
+		overageValue = currentNumber % parseInt(str2);
+		return currentQuotient;
+	}).join('');
+
+	return result.replace(/^0+/, '') || '0';
+}
 
 const quotientOfNumbers = divide(num1, num2);
 console.log(quotientOfNumbers);
