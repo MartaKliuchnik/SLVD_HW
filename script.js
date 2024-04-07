@@ -1,6 +1,6 @@
 const getTypeValue = (value) => typeof value;
 
-const getError = (value, type) => {
+const getErrorType = (value, type) => {
 	const typeOfValue = getTypeValue(value);
 	const valueToString =
 		typeOfValue === 'symbol' || typeOfValue === 'bigint'
@@ -14,7 +14,44 @@ const getError = (value, type) => {
 	);
 };
 
+const getError = (message) => {
+	throw new Error(message);
+};
+
 const MyCustomLibrary = {
+	// possible two distinct operations: numeric addition and string concatenation
+	addValues: function (value1, value2) {
+		const currentTypeForValue1 = getTypeValue(value1);
+		const currentTypeForValue2 = getTypeValue(value2);
+
+		const isBigInt1 = currentTypeForValue1 === 'bigint';
+		const isBigInt2 = currentTypeForValue2 === 'bigint';
+		const isString1 = currentTypeForValue1 === 'string';
+		const isString2 = currentTypeForValue2 === 'string';
+		const isNumber1 = currentTypeForValue1 === 'number';
+		const isNumber2 = currentTypeForValue2 === 'number';
+		const isSymbol1 = currentTypeForValue1 === 'symbol';
+		const isSymbol2 = currentTypeForValue2 === 'symbol';
+		const isObj1 = currentTypeForValue1 === 'object';
+		const isObj2 = currentTypeForValue2 === 'object';
+
+		if (isBigInt1 && isBigInt2) {
+			return value1 + value2;
+		} else if (isBigInt1 === !isBigInt2 || isSymbol1 || isSymbol2) {
+			getError('The addition is not possible');
+		} else if (isString1 || isString2) {
+			return value1 && value2 && (isObj1 || isObj2)
+				? getError('The addition is not possible')
+				: value1 + value2;
+		} else if (isNumber1 || isNumber2) {
+			return isNaN(value1) || isNaN(value2)
+				? getError('The addition is not possible')
+				: value1 + value2;
+		} else {
+			getError('The addition is not possible');
+		}
+	},
+
 	stringifyValue: function (value) {
 		const currentType = getTypeValue(value);
 		if (value && currentType === 'object') {
@@ -38,14 +75,14 @@ const MyCustomLibrary = {
 	convertToNumber: function (value) {
 		if (!value) {
 			// console.log(`null || undefined || 0 == ${value}`);
-			return Number(value) === 0 ? +value : getError(value, 'number');
+			return Number(value) === 0 ? +value : getErrorType(value, 'number');
 		} else {
 			const currentType = getTypeValue(value);
 			if (currentType === 'string') {
-				return isNaN(parseFloat(value)) ? getError() : parseFloat(value);
+				return isNaN(parseFloat(value)) ? getErrorType() : parseFloat(value);
 			} else {
 				currentType === 'bigint' || currentType === 'symbol' || isNaN(value)
-					? getError(value, 'number')
+					? getErrorType(value, 'number')
 					: +value;
 			}
 		}
@@ -58,22 +95,23 @@ const MyCustomLibrary = {
 
 		if (type === 'string') {
 			return value && (currentType === 'object' || currentType === 'function')
-				? getError(value, 'string')
+				? getErrorType(value, 'string')
 				: value + '';
 		} else if (type === 'number') {
 			return currentType === 'bigint' ||
 				currentType === 'symbol' ||
 				isNaN(value)
-				? getError(value, 'number')
+				? getErrorType(value, 'number')
 				: +value;
 		} else if (type === 'boolean') {
 			return !!value;
 		} else {
-			return getError(value, type);
+			return getErrorType(value, type);
 		}
 	},
 };
 
+const bigv = BigInt('0x1ffffffeeeeeeeeef');
 const mockData = [
 	// 0,
 	// false,
@@ -89,12 +127,16 @@ const mockData = [
 	// '2w',
 	// true,
 	// 12,
-	// BigInt('0x1ffffffeeeeeeeeef'),
+	// bigv,
 	// function () {
 	// 	console.log('check');
 	// },
 	// Symbol('foo'),
 ];
+
+// mockData.forEach((value) =>
+// 	console.log(MyCustomLibrary.addValues(value, true))
+// );
 
 // mockData.forEach((value) => console.log(MyCustomLibrary.stringifyValue(value)));
 
