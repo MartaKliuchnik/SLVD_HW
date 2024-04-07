@@ -1,7 +1,17 @@
 const getTypeValue = (value) => typeof value;
 
-const getError = (message = 'Conversion is not possible') => {
-	throw new Error(message);
+const getError = (value, type) => {
+	const typeOfValue = getTypeValue(value);
+	const valueToString =
+		typeOfValue === 'symbol' || typeOfValue === 'bigint'
+			? value.toString()
+			: typeOfValue === 'object' && value
+			? JSON.stringify(value)
+			: value;
+
+	throw new Error(
+		`Conversion <${valueToString}> to type "${type}" is not possible`
+	);
 };
 
 const MyCustomLibrary = {
@@ -27,29 +37,73 @@ const MyCustomLibrary = {
 	// convert to a number impossibly: undefined; {}; []; Symbol
 	convertToNumber: function (value) {
 		if (!value) {
-			console.log(`null || undefined == ${value}`);
-			return Number(undefined) === 0 ? +value : getError();
+			// console.log(`null || undefined || 0 == ${value}`);
+			return Number(value) === 0 ? +value : getError(value, 'number');
 		} else {
 			const currentType = getTypeValue(value);
-			if (
-				currentType === 'number' ||
-				currentType === 'string' ||
-				currentType === 'boolean'
-			) {
-				if (currentType === 'number' || currentType === 'boolean') {
-					console.log(`number || boolean == ${value}`);
-					return +value;
-				} else {
-					console.log(`string == ${value}`);
-					return isNaN(parseFloat(value)) ? getError() : parseFloat(value);
-				}
+			if (currentType === 'string') {
+				return isNaN(parseFloat(value)) ? getError() : parseFloat(value);
 			} else {
-				return getError();
+				currentType === 'bigint' || currentType === 'symbol' || isNaN(value)
+					? getError(value, 'number')
+					: +value;
 			}
+		}
+	},
+
+	// Coercion is the process of forcing one type of primitive value to another type of primitive value.
+	// In Javascript, objects NEVER get coerced.
+	coerceToType: function (value, type) {
+		const currentType = getTypeValue(value);
+
+		if (type === 'string') {
+			return value && (currentType === 'object' || currentType === 'function')
+				? getError(value, 'string')
+				: value + '';
+		} else if (type === 'number') {
+			return currentType === 'bigint' ||
+				currentType === 'symbol' ||
+				isNaN(value)
+				? getError(value, 'number')
+				: +value;
+		} else if (type === 'boolean') {
+			return !!value;
+		} else {
+			return getError(value, type);
 		}
 	},
 };
 
-console.log(MyCustomLibrary.stringifyValue({ id: 4 }));
-console.log(MyCustomLibrary.invertBoolean(NaN));
-console.log(MyCustomLibrary.convertToNumber(Symbol('foo')));
+const mockData = [
+	// 0,
+	// false,
+	// null,
+	// undefined,
+	// '',
+	// NaN,
+	// [],
+	// [1, 2],
+	// {},
+	// { id: 4 },
+	// '12',
+	// '2w',
+	// true,
+	// 12,
+	// BigInt('0x1ffffffeeeeeeeeef'),
+	// function () {
+	// 	console.log('check');
+	// },
+	// Symbol('foo'),
+];
+
+// mockData.forEach((value) => console.log(MyCustomLibrary.stringifyValue(value)));
+
+// mockData.forEach((value) => console.log(MyCustomLibrary.invertBoolean(value)));
+
+// mockData.forEach((value) =>
+// 	console.log(MyCustomLibrary.convertToNumber(value))
+// );
+
+// mockData.forEach((value) =>
+// 	console.log(MyCustomLibrary.coerceToType(value, 'string'))
+// );
