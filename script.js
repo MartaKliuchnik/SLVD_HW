@@ -1,7 +1,32 @@
 const getTypeValue = (value) => typeof value;
 
-const getErrorType = (value, type) => {
+const isType = (value, type) => getTypeValue(value) === type;
+
+const convertToString = (value, currentType) => {
+	return value && (currentType === 'object' || currentType === 'function')
+		? createConversionError(value, 'string')
+		: value + '';
+};
+
+const convertToNumber = (value, currentType) => {
+	return currentType === 'bigint' || currentType === 'symbol' || isNaN(value)
+		? createConversionError(value, 'number')
+		: +value;
+};
+
+const convertToBoolean = (value) => !!value;
+
+const convertStringToNumber = (value) => {
+	return isNaN(parseFloat(value)) ? createConversionError() : parseFloat(value);
+};
+
+const handleFalsyNumber = (value) => {
+	return Number(value) === 0 ? +value : createConversionError(value, 'number');
+};
+
+const createConversionError = (value, type) => {
 	const typeOfValue = getTypeValue(value);
+
 	const valueToString =
 		typeOfValue === 'symbol' || typeOfValue === 'bigint'
 			? value.toString()
@@ -14,99 +39,102 @@ const getErrorType = (value, type) => {
 	);
 };
 
-const getError = (message) => {
+const throwError = (message) => {
 	throw new Error(message);
 };
 
 const MyCustomLibrary = {
-	// possible two distinct operations: numeric addition and string concatenation
+	/* Adds two values together, either numerically or as strings.
+	If both values are numbers or bigNumbers, they are added together numerically.
+	If both values are strings, they are concatenated. */
+
 	addValues: function (value1, value2) {
-		const currentTypeForValue1 = getTypeValue(value1);
-		const currentTypeForValue2 = getTypeValue(value2);
+		const isBigInt1 = isType(value1, 'bigint');
+		const isBigInt2 = isType(value2, 'bigint');
+		const isString1 = isType(value1, 'string');
+		const isString2 = isType(value2, 'string');
+		const isNumber1 = isType(value1, 'number');
+		const isNumber2 = isType(value2, 'number');
 
-		const isBigInt1 = currentTypeForValue1 === 'bigint';
-		const isBigInt2 = currentTypeForValue2 === 'bigint';
-		const isString1 = currentTypeForValue1 === 'string';
-		const isString2 = currentTypeForValue2 === 'string';
-		const isNumber1 = currentTypeForValue1 === 'number';
-		const isNumber2 = currentTypeForValue2 === 'number';
-		const isSymbol1 = currentTypeForValue1 === 'symbol';
-		const isSymbol2 = currentTypeForValue2 === 'symbol';
-		const isObj1 = currentTypeForValue1 === 'object';
-		const isObj2 = currentTypeForValue2 === 'object';
+		console.log(isNumber1);
+		console.log(isNumber2);
 
-		if (isBigInt1 && isBigInt2) {
+		if ((isBigInt1 && isBigInt2) || (isString1 && isString2)) {
 			return value1 + value2;
-		} else if (isBigInt1 === !isBigInt2 || isSymbol1 || isSymbol2) {
-			getError('The addition is not possible');
-		} else if (isString1 || isString2) {
-			return value1 && value2 && (isObj1 || isObj2)
-				? getError('The addition is not possible')
-				: value1 + value2;
-		} else if (isNumber1 || isNumber2) {
-			return isNaN(value1) || isNaN(value2)
-				? getError('The addition is not possible')
-				: value1 + value2;
+		} else if (isBigInt1 === !isBigInt2) {
+			throwError('The addition is not possible');
+		} else if (!isNaN(value1) && !isNaN(value2) && isNumber1 && isNumber2) {
+			return value1 + value2;
 		} else {
-			getError('The addition is not possible');
+			throwError('The addition is not possible');
 		}
 	},
+
+	/* Converts a value to a string representation.
+	If the value is an object, it is converted to a JSON string.
+	Otherwise, it is converted using the String constructor. */
 
 	stringifyValue: function (value) {
 		const currentType = getTypeValue(value);
+
 		if (value && currentType === 'object') {
-			console.log(`[ ] || { } == ${JSON.stringify(value)}`);
 			return JSON.stringify(value);
-		} else {
-			return String(value);
 		}
+
+		return String(value);
 	},
 
-	// In JavaScript 6 falsy values: false, undefined, null, NaN, 0, "" - return Error
-	// FROM BOOLEAN TO INVERTED VALUE
+	/* 
+	Inverts a boolean value.
+	If the value is a boolean, its inverted value is returned.
+	If the value is not a boolean, an error is thrown.
+	*/
+
 	invertBoolean: function (value) {
 		return getTypeValue(value) === 'boolean'
 			? !value
-			: getError('The argument is not a boolean');
+			: throwError('The argument is not a boolean');
 	},
 
-	// convert to a number possibly: number; string (depend on value); null; boolean
-	// convert to a number impossibly: undefined; {}; []; Symbol
+	/* 
+	Converts a value to a number if possible.
+	Possible values that can be converted to a number include: 
+	- numbers
+	- strings (parsed as numbers if possible)
+	- null
+	- booleans (true is converted to 1, false is converted to 0)
+	*/
 	convertToNumber: function (value) {
 		if (!value) {
-			// console.log(`null || undefined || 0 == ${value}`);
-			return Number(value) === 0 ? +value : getErrorType(value, 'number');
-		} else {
-			const currentType = getTypeValue(value);
-			if (currentType === 'string') {
-				return isNaN(parseFloat(value)) ? getErrorType() : parseFloat(value);
-			} else {
-				currentType === 'bigint' || currentType === 'symbol' || isNaN(value)
-					? getErrorType(value, 'number')
-					: +value;
-			}
+			return handleFalsyNumber(value);
 		}
+
+		const currentType = getTypeValue(value);
+
+		if (currentType === 'string') {
+			return convertStringToNumber(value);
+		}
+
+		return convertToNumber(value, currentType);
 	},
 
-	// Coercion is the process of forcing one type of primitive value to another type of primitive value.
-	// In Javascript, objects NEVER get coerced.
+	/* 
+	Coerces a value to a specified type.
+	Coercion is the process of forcing one type of primitive value to another type of primitive value.
+	In JavaScript, objects are never coerced.
+	*/
 	coerceToType: function (value, type) {
 		const currentType = getTypeValue(value);
 
-		if (type === 'string') {
-			return value && (currentType === 'object' || currentType === 'function')
-				? getErrorType(value, 'string')
-				: value + '';
-		} else if (type === 'number') {
-			return currentType === 'bigint' ||
-				currentType === 'symbol' ||
-				isNaN(value)
-				? getErrorType(value, 'number')
-				: +value;
-		} else if (type === 'boolean') {
-			return !!value;
-		} else {
-			return getErrorType(value, type);
+		switch (type) {
+			case 'string':
+				return convertToString(value, currentType);
+			case 'number':
+				return convertToNumber(value, currentType);
+			case 'boolean':
+				return convertToBoolean(value);
+			default:
+				return createConversionError(value, type);
 		}
 	},
 };
@@ -134,17 +162,15 @@ const mockData = [
 	// Symbol('foo'),
 ];
 
-// mockData.forEach((value) =>
-// 	console.log(MyCustomLibrary.addValues(value, true))
-// );
+// mockData.forEach((value) => console.log(MyCustomLibrary.addValues(value, 10)));
 
 // mockData.forEach((value) => console.log(MyCustomLibrary.stringifyValue(value)));
 
 // mockData.forEach((value) => console.log(MyCustomLibrary.invertBoolean(value)));
 
-// mockData.forEach((value) =>
-// 	console.log(MyCustomLibrary.convertToNumber(value))
-// );
+mockData.forEach((value) =>
+	console.log(MyCustomLibrary.convertToNumber(value))
+);
 
 // mockData.forEach((value) =>
 // 	console.log(MyCustomLibrary.coerceToType(value, 'string'))
