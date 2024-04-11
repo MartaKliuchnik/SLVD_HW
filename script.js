@@ -24,6 +24,15 @@ const handleFalsyNumber = (value) => {
 	return Number(value) === 0 ? +value : createConversionError(value, 'number');
 };
 
+const isValidDate = (dateString) => {
+	const convertDate = new Date(dateString);
+	return !isNaN(convertDate.getTime());
+};
+
+const isValidNumber = (value) => {
+	return !isNaN(value) && getTypeValue(value) === 'number';
+};
+
 const createConversionError = (value, type) => {
 	const typeOfValue = getTypeValue(value);
 
@@ -137,6 +146,26 @@ const MyCustomLibrary = {
 				return createConversionError(value, type);
 		}
 	},
+
+	/*
+	Calculates the resulting date by adding a given date (initial date as a string) to a specified number of days (parameter must be a number).
+	The function internally converts the string to a Date object using the new Date(); 
+	The method GetTime() tranform Date object object transforms into a number, making it suitable for numerical calculations.
+	*/
+	addingToDate: function (dateString, days) {
+		if (!isValidDate(dateString)) {
+			return throwError(`The date <${dateString}> is invalid`);
+		}
+
+		if (!isValidNumber(days)) {
+			return throwError('The addition is not possible');
+		}
+
+		const convertDate = new Date(dateString).getTime();
+		console.log(typeof convertDate);
+		const millisecondsPerDay = days * 24 * 60 * 60 * 1000;
+		return new Date(convertDate + millisecondsPerDay);
+	},
 };
 
 const bigv = BigInt('0x1ffffffeeeeeeeeef');
@@ -168,10 +197,13 @@ const mockData = [
 
 // mockData.forEach((value) => console.log(MyCustomLibrary.invertBoolean(value)));
 
-mockData.forEach((value) =>
-	console.log(MyCustomLibrary.convertToNumber(value))
-);
+// mockData.forEach((value) =>
+// 	console.log(MyCustomLibrary.convertToNumber(value))
+// );
 
 // mockData.forEach((value) =>
 // 	console.log(MyCustomLibrary.coerceToType(value, 'string'))
 // );
+
+const dateString = '2024-04-11';
+console.log(MyCustomLibrary.addingToDate(dateString, 10));
