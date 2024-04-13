@@ -5,6 +5,7 @@ const products = [
 ];
 
 // Task 1: Immutability and Pure Functions
+// 1.1
 function calculateDiscountedPrice(arrayOfProducts, discountPercentage) {
 	const newArrayOfProducts = arrayOfProducts.map((product) => {
 		const discountPrice =
@@ -14,13 +15,13 @@ function calculateDiscountedPrice(arrayOfProducts, discountPercentage) {
 
 	return newArrayOfProducts;
 }
+// console.log(calculateDiscountedPrice(products, 10));
 
+// 1.2
 function calculateTotalPrice(arrayOfProducts) {
 	const totalPrice = arrayOfProducts.reduce((sum, { price }) => sum + price, 0);
 	return totalPrice;
 }
-
-// console.log(calculateDiscountedPrice(products, 10));
 // console.log(calculateTotalPrice(products));
 
 // Task 2: Function Composition and Point-Free Style
@@ -111,4 +112,41 @@ const getAverageGrade = compose3(
 	getGradeForStudent,
 	getTotalGrade
 )(arrayOfStudent);
-console.log(getAverageGrade);
+// console.log(getAverageGrade);
+
+// Task 3: Closures and Higher-Order Functions
+// 3.1
+function createCounter(initailCount) {
+	return function (incrementalCount) {
+		return initailCount + incrementalCount;
+	};
+}
+
+const counter1 = createCounter(10);
+// console.log(counter1(2));
+const counter2 = createCounter(20);
+// console.log(counter2(2));
+
+// 3.2
+function repeatFunction(fn, number) {
+	return function () {
+		if (number < 0) {
+			while (true) {
+				fn('There is invoking the function indefinitely...');
+			}
+		} else {
+			for (let i = 0; i < number; i++) {
+				fn('The function has been repeated');
+			}
+		}
+	};
+}
+
+function getRepetitionMessage(message) {
+	console.log(message);
+}
+
+const getRepeat1 = repeatFunction(getRepetitionMessage, 3);
+getRepeat1();
+const getRepeat2 = repeatFunction(getRepetitionMessage, -1);
+// getRepeat2();
