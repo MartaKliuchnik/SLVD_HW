@@ -178,4 +178,60 @@ Exponentiation corresponds to repeated multiplication of the base, n times
 function power(base, exponent) {
 	return exponent === 0 ? 1 : base * power(base, --exponent);
 }
-// console.log(power(5, 3));
+// console.log(power(5, 2));
+
+// Task 5: Lazy Evaluation and Generators
+/* 
+Lazy evaluation means to delay the evaluation of an expression until it’s needed. 
+*/
+// 5.1
+function lazyMap(array, fn) {
+	let i = 0;
+	return function () {
+		if (i < array.length) {
+			const mappingResult = fn(array[i]);
+			i++;
+			return mappingResult;
+		} else {
+			return { done: true };
+		}
+	};
+}
+
+const checkLazyMap = lazyMap([1, 2, 3, 4], (number) => ({
+	value: number,
+	done: false,
+}));
+// console.log(checkLazyMap());
+// console.log(checkLazyMap());
+// console.log(checkLazyMap());
+// console.log(checkLazyMap());
+// console.log(checkLazyMap());
+
+// 5.2
+//  F(n) = F(n-1) + F(n-2), examples: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ...]
+function fibonacciGenerator() {
+	let current = 0;
+	let next = 1;
+	let temp;
+
+	return function () {
+		temp = current;
+		current = current + next;
+		next = temp;
+		return temp;
+	};
+}
+
+const getFibonacciValue = fibonacciGenerator();
+
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
+console.log(getFibonacciValue());
