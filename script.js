@@ -147,6 +147,35 @@ function getRepetitionMessage(message) {
 }
 
 const getRepeat1 = repeatFunction(getRepetitionMessage, 3);
-getRepeat1();
+// getRepeat1();
 const getRepeat2 = repeatFunction(getRepetitionMessage, -1);
 // getRepeat2();
+
+// Task 4: Recursion and Tail Call Optimization
+// 4.1
+/* 
+CalculateFactorial was optimized by using trampoline functions.
+Trampoline function encapsulates the recursive calls within an iterative loop,
+results are stored in variables within the loop, not in the call stack.
+*/
+function calculateFactorial(number) {
+	function trampolinaFunction(number, result) {
+		if (number === 0) {
+			return result;
+		} else {
+			return trampolinaFunction(number - 1, number * result);
+		}
+	}
+	return trampolinaFunction(number, 1);
+}
+// console.log(calculateFactorial(4));
+
+// 4.2
+/* 
+Exponentiation is a operation (a^n)
+Exponentiation corresponds to repeated multiplication of the base, n times
+*/
+function power(base, exponent) {
+	return exponent === 0 ? 1 : base * power(base, --exponent);
+}
+// console.log(power(5, 3));
