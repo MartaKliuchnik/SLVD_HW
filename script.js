@@ -66,7 +66,7 @@ Object.defineProperties(product, {
 });
 
 const descriptorProductProperties = Object.getOwnPropertyDescriptors(product);
-console.log(JSON.stringify(descriptorProductProperties, null, 2));
+// console.log(JSON.stringify(descriptorProductProperties, null, 2));
 
 // 2.2 Implement a function called getTotalPrice
 function getTotalPrise(productObject) {
@@ -81,7 +81,7 @@ function getTotalPrise(productObject) {
 
 	return priseValue * quantityValue;
 }
-console.log(getTotalPrise(product));
+// console.log(getTotalPrise(product));
 
 // 2.3 Implement a function called deleteNonConfigurable
 function deleteNonConfigurable(objectValue, propertyName) {
@@ -101,4 +101,49 @@ function deleteNonConfigurable(objectValue, propertyName) {
 		throw new Error(`The property <${propertyName}> is non-configurable`);
 	}
 }
-console.log(deleteNonConfigurable(product, 'name'));
+// console.log(deleteNonConfigurable(product, 'name'));
+
+// Task 3: Object Property Getters and Setters
+const bankAccount = {
+	_balance: 1000,
+
+	get formattedBalance() {
+		return `$${this._balance}`;
+	},
+
+	get balance() {
+		return this._balance;
+	},
+	set balance(newBalance) {
+		this._balance = newBalance;
+	},
+
+	transfer: function (targetAccount, amount) {
+		if (typeof amount !== 'number' || this._balance < amount) {
+			throw new Error('Invalid operation');
+		}
+
+		this._balance -= amount;
+		console.log(
+			`The money has been transferred from current account. Your balance is ${this.formattedBalance}`
+		);
+
+		targetAccount.balance += amount;
+		console.log(
+			`The money has been transferred to the target account. The new balance is ${targetAccount.formattedBalance}`
+		);
+	},
+};
+
+// bankAccount.balance = 4000;
+// console.log(bankAccount.formattedBalance);
+
+const bankAccount1 = Object.defineProperties(
+	{},
+	Object.getOwnPropertyDescriptors(bankAccount)
+);
+const bankAccount2 = Object.defineProperties(
+	{},
+	Object.getOwnPropertyDescriptors(bankAccount)
+);
+console.log(bankAccount1.transfer(bankAccount2, 1000));
