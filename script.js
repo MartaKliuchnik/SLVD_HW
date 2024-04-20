@@ -146,4 +146,38 @@ const bankAccount2 = Object.defineProperties(
 	{},
 	Object.getOwnPropertyDescriptors(bankAccount)
 );
-console.log(bankAccount1.transfer(bankAccount2, 1000));
+// console.log(bankAccount1.transfer(bankAccount2, 1000));
+
+// Task 4: Advanced Property Descriptors
+const person1 = {
+	firstName: 'John',
+	lastName: 'Doe',
+	age: 30,
+	email: 'john.doe@example.com',
+	address: {
+		city: 'Dresden',
+		street: 'Pushkin Str',
+	},
+};
+
+function createImmutableObject(someObject) {
+	let immutableVersion = {};
+
+	function getImmutateVersion(result, baseObject) {
+		for (let key in baseObject) {
+			if (typeof baseObject[key] === 'object') {
+				result[key] = {};
+				return getImmutateVersion(result[key], baseObject[key]);
+			} else {
+				Object.defineProperty(result, key, {
+					...Object.getOwnPropertyDescriptor(baseObject, key),
+					writable: false,
+				});
+			}
+		}
+	}
+	getImmutateVersion(immutableVersion, someObject);
+	return immutableVersion;
+}
+console.log(createImmutableObject(person));
+console.log(createImmutableObject(person1));
