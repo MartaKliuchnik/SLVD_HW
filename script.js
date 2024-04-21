@@ -227,10 +227,82 @@ const complexDataStructures = {
 function deepCloneObject(someObject) {
 	return structuredClone(someObject);
 }
-
 const deepCopy = deepCloneObject(complexDataStructures);
 deepCopy.items.push({ id: 3, name: 'Product 3', price: 33 });
+// console.log(complexDataStructures);
+// console.log('initial value above');
+// console.log(deepCopy);
 
-console.log(complexDataStructures);
-console.log('initail value above');
-console.log(deepCopy);
+// Task 7: Object Property Validation
+const personForValidation = {
+	firstName: 'John',
+	lastName: 'Donna',
+	age: 56,
+	email: 'john.doe@example.com',
+	address: {
+		street: 'Pushkin Str',
+	},
+};
+
+const schemaForPerson = {
+	firstName: {
+		type: 'string',
+		required: true,
+		validate: (firstName) => firstName.length >= 4,
+	},
+	lastName: {
+		type: 'string',
+		required: true,
+		validate: (firstName) => firstName.length >= 4,
+	},
+	age: { type: 'number', required: true, validate: (age) => age >= 18 },
+	email: {
+		type: 'string',
+		required: true,
+		validate: (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/gi.test(email),
+	},
+	address: {
+		type: 'object',
+		required: false,
+		nestedSchema: {
+			street: { type: 'string', required: false },
+			city: { type: 'string', required: false },
+		},
+	},
+};
+
+function validateObject(someObject, validationSchema) {
+	if (typeof validationSchema !== 'object') {
+		throw new Error('Schema must be an object');
+	}
+
+	function validateNestedObject(object, validationSchema) {
+		for (let schemaKey in validationSchema) {
+			const { type, required, validate, nestedSchema } =
+				validationSchema[schemaKey];
+
+			if (required && !object[schemaKey]) {
+				return false;
+			}
+
+			if (schemaKey in object) {
+				if (typeof object[schemaKey] !== type) {
+					return false;
+				}
+			}
+
+			if (object[schemaKey] && validate && !validate(object[schemaKey])) {
+				return false;
+			}
+
+			if (object[schemaKey] && nestedSchema) {
+				if (!validateNestedObject(object[schemaKey], nestedSchema)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	return validateNestedObject(someObject, validationSchema);
+}
+console.log(validateObject(personForValidation, schemaForPerson));
