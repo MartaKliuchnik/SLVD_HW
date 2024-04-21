@@ -209,3 +209,28 @@ function observeObject(someObject, callback) {
 	});
 }
 const proxy1 = observeObject(person, logPropertyName);
+
+// Task 6: Object Deep Cloning
+const complexDataStructures = {
+	customer: {
+		name: 'John Doe',
+		email: 'john.doe@example.com',
+	},
+	items: [
+		{ id: 1, name: 'Product 1', price: 10 },
+		{ id: 2, name: 'Product 2', price: 15 },
+	],
+	totalPrice: 25.0,
+};
+
+// The global structuredClone() method creates a deep clone of a given value using the structured clone algorithm.
+function deepCloneObject(someObject) {
+	return structuredClone(someObject);
+}
+
+const deepCopy = deepCloneObject(complexDataStructures);
+deepCopy.items.push({ id: 3, name: 'Product 3', price: 33 });
+
+console.log(complexDataStructures);
+console.log('initail value above');
+console.log(deepCopy);
