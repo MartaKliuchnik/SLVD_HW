@@ -179,5 +179,33 @@ function createImmutableObject(someObject) {
 	getImmutateVersion(immutableVersion, someObject);
 	return immutableVersion;
 }
-console.log(createImmutableObject(person));
-console.log(createImmutableObject(person1));
+// console.log(createImmutableObject(person));
+// console.log(createImmutableObject(person1));
+
+// Task 5: Object Observation
+function logPropertyName(property, action) {
+	console.log(
+		`The property name is <${property}>. The action <${action}> was performed on the object`
+	);
+}
+
+function observeObject(someObject, callback) {
+	return new Proxy(someObject, {
+		set: function (target, key, value) {
+			callback(key, 'set');
+			if (Object.getOwnPropertyDescriptor(target, key).writable === false) {
+				console.error(`The property <${key}> is non-writable`);
+			} else if (
+				(key === 'firstName' || key === 'lastName') &&
+				value.length < 4
+			) {
+				console.error("Person's name must have more than 4 letter");
+			} else if (key === 'age' && value < 18) {
+				console.error("Person's age should be 18 or older");
+			} else {
+				return Reflect.set(...arguments);
+			}
+		},
+	});
+}
+const proxy1 = observeObject(person, logPropertyName);
