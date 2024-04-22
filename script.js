@@ -8,7 +8,7 @@ const getUniqueness = (someArray) => {
 function customFilterUnique(arr, callback) {
 	return callback(arr);
 }
-console.log(customFilterUnique(numbersArray, getUniqueness));
+// console.log(customFilterUnique(numbersArray, getUniqueness));
 
 // 1.2
 const usersArray = [
@@ -21,4 +21,28 @@ const usersArray = [
 const getAdultUsers = (someArray) => {
 	return someArray.filter(({ age }) => age >= 18);
 };
-console.log(customFilterUnique(usersArray, getAdultUsers));
+// console.log(customFilterUnique(usersArray, getAdultUsers));
+
+// Task 2: Array Chunking
+// 2.1
+function chunkArray(someArray, chunkSize) {
+	let result = [];
+	for (let i = 0; i < someArray.length; i += chunkSize) {
+		let chunk = someArray.slice(i, i + chunkSize);
+		result.push(chunk);
+	}
+	return result;
+}
+console.log(chunkArray(numbersArray, 4));
+
+// 2.2
+const optimazedChunkArray = (someArray, chunkSize) =>
+	someArray.reduce((chunkArray, item, index) => {
+		return index % chunkSize === 0
+			? [...chunkArray, [item]]
+			: chunkArray.map((chunk, i) => {
+					return i === chunkArray.length - 1 ? [...chunk, item] : chunk;
+			  });
+	}, []);
+
+console.log(optimazedChunkArray(numbersArray, 4));
