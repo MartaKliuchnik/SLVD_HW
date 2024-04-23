@@ -33,7 +33,7 @@ function chunkArray(someArray, chunkSize) {
 	}
 	return result;
 }
-console.log(chunkArray(numbersArray, 4));
+// console.log(chunkArray(numbersArray, 4));
 
 // 2.2
 const optimazedChunkArray = (someArray, chunkSize) =>
@@ -45,4 +45,27 @@ const optimazedChunkArray = (someArray, chunkSize) =>
 			  });
 	}, []);
 
-console.log(optimazedChunkArray(numbersArray, 4));
+// console.log(optimazedChunkArray(numbersArray, 4));
+
+// Task 3: Array Shuffling
+// 3.1
+function customShuffle(someArray) {
+	return someArray.toSorted(() => Math.random() - 0.5);
+}
+console.log(customShuffle(numbersArray));
+
+// 3.2 (Fisher-Yates shuffle algorithm)
+function customShuffleAlgorithm(someArray) {
+	const shuffledArray = [...someArray];
+
+	for (let i = shuffledArray.length - 1; i > 0; i--) {
+		const randomIndex = Math.floor(Math.random() * (i + 1));
+		[shuffledArray[i], shuffledArray[randomIndex]] = [
+			shuffledArray[randomIndex],
+			shuffledArray[i],
+		];
+	}
+
+	return shuffledArray;
+}
+console.log(customShuffleAlgorithm(numbersArray));
