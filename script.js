@@ -52,7 +52,7 @@ const optimazedChunkArray = (someArray, chunkSize) =>
 function customShuffle(someArray) {
 	return someArray.toSorted(() => Math.random() - 0.5);
 }
-console.log(customShuffle(numbersArray));
+// console.log(customShuffle(numbersArray));
 
 // 3.2 (Fisher-Yates shuffle algorithm)
 function customShuffleAlgorithm(someArray) {
@@ -68,4 +68,22 @@ function customShuffleAlgorithm(someArray) {
 
 	return shuffledArray;
 }
-console.log(customShuffleAlgorithm(numbersArray));
+// console.log(customShuffleAlgorithm(numbersArray));
+
+// Task 4: Array Intersection and Union
+const arr1 = [11, 21, 3, 21];
+const arr2 = [3, 2, 11, 0, 21, 3];
+
+// 4.1
+function getArrayIntersection(someArray1, someArray2) {
+	return someArray1.filter(
+		(item, i) => someArray2.includes(item) && someArray1.indexOf(item) === i
+	);
+}
+console.log(getArrayIntersection(arr1, arr2));
+
+// 4.2
+function getArrayUnion(someArray1, someArray2) {
+	return Array.from(new Set([...someArray1, ...someArray2]));
+}
+console.log(getArrayUnion(arr1, arr2));
