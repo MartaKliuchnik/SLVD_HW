@@ -119,19 +119,23 @@ const bankAccount = {
 	},
 
 	transfer: function (targetAccount, amount) {
-		if (typeof amount !== 'number' || this._balance < amount) {
+		if (typeof amount !== 'number') {
 			throw new Error('Invalid operation');
 		}
 
-		this._balance -= amount;
-		console.log(
-			`The money has been transferred from current account. Your balance is ${this.formattedBalance}`
-		);
+		if (this._balance < amount) {
+			throw new Error('Insufficient funds for transfer');
+		} else {
+			this._balance -= amount;
+			console.log(
+				`The money has been transferred from current account. Your balance is ${this.formattedBalance}`
+			);
 
-		targetAccount.balance += amount;
-		console.log(
-			`The money has been transferred to the target account. The new balance is ${targetAccount.formattedBalance}`
-		);
+			targetAccount.balance += amount;
+			console.log(
+				`The money has been transferred to the target account. The new balance is ${targetAccount.formattedBalance}`
+			);
+		}
 	},
 };
 
@@ -146,7 +150,7 @@ const bankAccount2 = Object.defineProperties(
 	{},
 	Object.getOwnPropertyDescriptors(bankAccount)
 );
-// console.log(bankAccount1.transfer(bankAccount2, 1000));
+console.log(bankAccount1.transfer(bankAccount2, 10000));
 
 // Task 4: Advanced Property Descriptors
 const person1 = {
@@ -305,4 +309,4 @@ function validateObject(someObject, validationSchema) {
 	}
 	return validateNestedObject(someObject, validationSchema);
 }
-console.log(validateObject(personForValidation, schemaForPerson));
+// console.log(validateObject(personForValidation, schemaForPerson));
