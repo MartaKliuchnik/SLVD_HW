@@ -73,17 +73,53 @@ function customShuffleAlgorithm(someArray) {
 // Task 4: Array Intersection and Union
 const arr1 = [11, 21, 3, 21];
 const arr2 = [3, 2, 11, 0, 21, 3];
-
 // 4.1
 function getArrayIntersection(someArray1, someArray2) {
 	return someArray1.filter(
 		(item, i) => someArray2.includes(item) && someArray1.indexOf(item) === i
 	);
 }
-console.log(getArrayIntersection(arr1, arr2));
+// console.log(getArrayIntersection(arr1, arr2));
 
 // 4.2
 function getArrayUnion(someArray1, someArray2) {
 	return Array.from(new Set([...someArray1, ...someArray2]));
 }
-console.log(getArrayUnion(arr1, arr2));
+// console.log(getArrayUnion(arr1, arr2));
+
+// Task 5: Array Performance Analysis
+// 5.1
+const sampleArray = Array.from({ length: 1000 }, (_, index) => index + 1);
+
+function measureArrayPerformance(func, someArray) {
+	const startTime = performance.now();
+	func(someArray);
+	return performance.now() - startTime;
+}
+// console.log(measureArrayPerformance(getUniqueness, sampleArray));
+
+// 5.2
+const measureArrayPerformance2 = (func) => (someArray) => {
+	const startTime = performance.now();
+	func(someArray);
+	return performance.now() - startTime;
+};
+
+const builtInFilter = (someArray) => someArray.filter((num) => num % 2 === 0);
+
+function customFilter(someArray) {
+	let filteredArray = [];
+	for (let i = 0; i < someArray.length; i++) {
+		if (someArray[i] % 2 === 0) {
+			filteredArray.push(someArray[i]);
+		}
+	}
+	return filteredArray;
+}
+
+const customFilterPerformance =
+	measureArrayPerformance2(customFilter)(sampleArray);
+const builtInFilterPerfomance =
+	measureArrayPerformance2(builtInFilter)(sampleArray);
+console.log(`customFilterPerformance = ${customFilterPerformance}`);
+console.log(`builtInFilterPerfomance = ${builtInFilterPerfomance}`);
