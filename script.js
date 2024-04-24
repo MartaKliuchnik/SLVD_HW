@@ -150,7 +150,7 @@ const bankAccount2 = Object.defineProperties(
 	{},
 	Object.getOwnPropertyDescriptors(bankAccount)
 );
-console.log(bankAccount1.transfer(bankAccount2, 10000));
+// console.log(bankAccount1.transfer(bankAccount2, 10000));
 
 // Task 4: Advanced Property Descriptors
 const person1 = {
@@ -227,15 +227,21 @@ const complexDataStructures = {
 	totalPrice: 25.0,
 };
 
-// The global structuredClone() method creates a deep clone of a given value using the structured clone algorithm.
 function deepCloneObject(someObject) {
-	return structuredClone(someObject);
+	if (someObject === null || typeof someObject !== 'object') {
+		return someObject;
+	}
+	const initialValue = Array.isArray(someObject) ? [] : {};
+	return Object.keys(someObject).reduce((copy, key) => {
+		copy[key] = deepCloneObject(someObject[key]);
+		return copy;
+	}, initialValue);
 }
 const deepCopy = deepCloneObject(complexDataStructures);
 deepCopy.items.push({ id: 3, name: 'Product 3', price: 33 });
-// console.log(complexDataStructures);
-// console.log('initial value above');
-// console.log(deepCopy);
+console.log(complexDataStructures);
+console.log('initial value above');
+console.log(deepCopy);
 
 // Task 7: Object Property Validation
 const personForValidation = {
