@@ -60,3 +60,32 @@ const inputElement = document.getElementById('search-input');
 inputElement.addEventListener('input', (event) => {
 	debouncedSearchHandler(event.target.value);
 });
+
+// Task 5: Implementing Throttle Function
+const array = Array.from({ length: 1000 }, (_, i) => `Input ${i}`);
+const divElement = document.getElementById('container');
+for (let i = 0; i < array.length; i++) {
+	const inputElement = document.createElement('input');
+	inputElement.value = array[i];
+	divElement.appendChild(inputElement);
+}
+
+function onScroll(event) {
+	console.log('Scroll event:', event);
+}
+
+function throttle(func, interval) {
+	let timeout;
+	return (...args) => {
+		if (!timeout) {
+			func(...args);
+			timeout = setTimeout(() => {
+				timeout = null;
+			}, interval);
+		}
+	};
+}
+
+const throttledScrollHandler = throttle(onScroll, 1000);
+
+window.addEventListener('scroll', throttledScrollHandler);
