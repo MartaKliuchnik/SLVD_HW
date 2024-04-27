@@ -37,4 +37,26 @@ function multiline(strings) {
 	return formattedLines;
 }
 
-console.log(code);
+// console.log(code);
+
+// Task 4: Implementing Debounce Function
+function debouncedSearch(query) {
+	console.log('Searching for:', query);
+}
+
+function debounce(func, delay) {
+	let timeout;
+	return (...args) => {
+		if (timeout !== 0) clearTimeout(timeout);
+		timeout = setTimeout(() => {
+			func(...args);
+		}, delay);
+	};
+}
+
+const debouncedSearchHandler = debounce(debouncedSearch, 300);
+
+const inputElement = document.getElementById('search-input');
+inputElement.addEventListener('input', (event) => {
+	debouncedSearchHandler(event.target.value);
+});
