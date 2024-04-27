@@ -17,5 +17,24 @@ function highlightKeywords(templateString, arrayOfKeywords) {
 }
 
 const highlighted = highlightKeywords(template, keywords);
-console.log(highlighted);
+// console.log(highlighted);
 // Expected: "Learn <span class='highlight'>JavaScript</span> tagged templates to create custom <span class='highlight'>template</span> literals for <span class='highlight'>tagged</span> manipulation."
+
+// Task 3: Multiline Tagged Template
+const code = multiline`
+function add(a, b) {
+return a + b;
+}
+`;
+
+function multiline(strings) {
+	const lines = strings[0].trim().split('\n');
+
+	const formattedLines = lines.reduce(
+		(acc, line, index) => `${acc}\n${index + 1} ${line}`,
+		''
+	);
+	return formattedLines;
+}
+
+console.log(code);
