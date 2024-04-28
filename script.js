@@ -113,4 +113,28 @@ const step1 = curriedMultiply(2); // Returns a curried function
 const step2 = step1(3); // Returns a curried function
 const result = step2(4); // Returns the final result: 2 * 3 * 4 = 24
 
-console.log('Result:', result); // Expected: 24
+// console.log('Result:', result); // Expected: 24
+
+// Challenge
+const _ = Symbol('_');
+
+const curryWithPlaceholder = (func, arity) => {
+	return function curried(...args) {
+		if (args.length >= arity && !args.includes(_)) {
+			return func(...args);
+		} else {
+			return function (...moreArgs) {
+				const combinedArgs = args
+					.map((arg) => (arg === _ && moreArgs.length ? moreArgs.shift() : arg))
+					.concat(moreArgs);
+				return curried(...combinedArgs);
+			};
+		}
+	};
+};
+
+const curriedMultiplyWithPlaceholder = curryWithPlaceholder(multiply, 3);
+
+const stepWithPlaceholder = curriedMultiplyWithPlaceholder(2, _, 4);
+console.log(stepWithPlaceholder(3));
+console.log(stepWithPlaceholder(10));
