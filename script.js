@@ -1,3 +1,36 @@
+// Task 1: Quasi-Tagged Templates
+const translations = {
+	en: {
+		greet: 'Hello',
+		intro: 'Welcome to our website',
+	},
+	fr: {
+		greet: 'Bonjour',
+		intro: 'Bienvenue sur notre site web',
+	},
+};
+
+const language = 'fr'; // Change to "en" for English
+const greeting = 'greet';
+const introduction = 'intro';
+
+function localize(templateString, ...keys) {
+	const languageTranslation = translations[language] || {};
+	const languageSpecificTranslations = keys.map(
+		(key) => languageTranslation[key] || key
+	);
+
+	return templateString.reduce((translation, string, index) => {
+		return translation + string + (languageSpecificTranslations[index] || '');
+	}, '');
+}
+
+const localizedGreeting = localize`${greeting}`;
+const localizedIntroduction = localize`${introduction}`;
+
+console.log(localizedGreeting); // Expected: "Bonjour" (for language "fr")
+console.log(localizedIntroduction); // Expected: "Bienvenue sur notre site web" (for language "fr")
+
 // Task 2: Advanced Tagged Template
 const keywords = ['JavaScript', 'template', 'tagged'];
 const template =
@@ -136,5 +169,5 @@ const curryWithPlaceholder = (func, arity) => {
 const curriedMultiplyWithPlaceholder = curryWithPlaceholder(multiply, 3);
 
 const stepWithPlaceholder = curriedMultiplyWithPlaceholder(2, _, 4);
-console.log(stepWithPlaceholder(3));
-console.log(stepWithPlaceholder(10));
+// console.log(stepWithPlaceholder(3));
+// console.log(stepWithPlaceholder(10));
