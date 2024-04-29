@@ -16,15 +16,18 @@ const usersArray = [
 	{ name: 'Alex', age: 18 },
 	{ name: 'Anna', age: 8 },
 	{ name: 'Peter', age: 19 },
+	{ name: 'Peter', age: 9 },
 ];
 
 const getAdultUsers = (someArray) => {
-	return someArray.filter(({ age }) => age >= 18);
+	const uniq = {};
+	someArray.forEach((item) => (item.age >= 18 ? (uniq[item.name] = item) : ''));
+	return Object.values(uniq);
 };
-// console.log(customFilterUnique(usersArray, getAdultUsers));
+console.log(customFilterUnique(usersArray, getAdultUsers));
 
 // Task 2: Array Chunking
-// 2.1
+// 2.1s
 function chunkArray(someArray, chunkSize) {
 	let result = [];
 	for (let i = 0; i < someArray.length; i += chunkSize) {
@@ -121,5 +124,5 @@ const customFilterPerformance =
 	measureArrayPerformance2(customFilter)(sampleArray);
 const builtInFilterPerfomance =
 	measureArrayPerformance2(builtInFilter)(sampleArray);
-console.log(`customFilterPerformance = ${customFilterPerformance}`);
-console.log(`builtInFilterPerfomance = ${builtInFilterPerfomance}`);
+// console.log(`customFilterPerformance = ${customFilterPerformance}`);
+// console.log(`builtInFilterPerfomance = ${builtInFilterPerfomance}`);
