@@ -1,3 +1,31 @@
+// Task 1: Implement promiseAll Function
+const promises = [Promise.resolve(1), Promise.resolve(2), Promise.resolve(3)];
+
+function promiseAll(arrayOfPromises) {
+	return new Promise((resolve, reject) => {
+		let accumulator = [];
+		let currentLength = 0;
+
+		arrayOfPromises.forEach((singlePromise, index) => {
+			Promise.resolve(singlePromise)
+				.then((value) => {
+					accumulator[index] = value;
+					currentLength++;
+					if (currentLength === arrayOfPromises.length) resolve(accumulator);
+				})
+				.catch((e) => reject(e));
+		});
+	});
+}
+
+promiseAll(promises)
+	.then((results) => {
+		console.log('All promises resolved:', results); // Expected: [1, 2, 3]
+	})
+	.catch((error) => {
+		console.error('At least one promise rejected:', error);
+	});
+
 // Task 3: Implement Chaining of Promises as a Separate Function
 function asyncFunction1() {
 	return Promise.resolve('Result from asyncFunction1');
@@ -57,11 +85,11 @@ function promisify(fn) {
 	};
 }
 
-const promisedFunction = promisify(callbackStyleFunction);
-promisedFunction(3)
-	.then((result) => {
-		console.log('Promised function result:', result); // Expected: 6
-	})
-	.catch((error) => {
-		console.error('Promised function error:', error);
-	});
+// const promisedFunction = promisify(callbackStyleFunction);
+// promisedFunction(3)
+// 	.then((result) => {
+// 		console.log('Promised function result:', result); // Expected: 6
+// 	})
+// 	.catch((error) => {
+// 		console.error('Promised function error:', error);
+// 	});
