@@ -1,8 +1,8 @@
-// Part 1: Data Structure Implementations (stack, queue, tree, graph, linked list)
+// Part 1: Data Structure Implementations (stack)
 
 /**
  * Represents a stack.
- * Provides methods to add, retrieve, and remove elements from the stack.
+ * Provides methods for adding, retrieving, and removing elements from the stack.
  */
 class Stack {
 	// Creates an instance of Stack.
@@ -209,3 +209,84 @@ console.log(someMinMaxStack.getMax()); // 40
 
 // Display current someMinMaxStack
 console.log(someMinMaxStack); // maxStack: Stack {stack: [2, 40]}; minStack: Stack {stack: [2, 0]}; stack: [2, 40, 0]
+
+// Part 1: Data Structure Implementations (queue)
+/**
+ * Represents a Queue.
+ * Provides methods for adding, removing and returning elements from the queue.
+ */
+class Queue {
+	// Creates an instance of Queue.
+	constructor() {
+		this.queue = [];
+	}
+
+	/**
+	 * Adds a new element to the rear of the queue.
+	 * @param {any} newElement - The new element to be added to the queue.
+	 * @returns {Queue} - This method returns the updated Queue instance.
+	 */
+	enqueue(newElement) {
+		this.queue.push(newElement);
+		return this;
+	}
+
+	/**
+	 * Removes and returns the element from the front of the queue.
+	 * @returns {any} - This method returns the front element of the queue.
+	 * @returns {undefined} - This method does not return any value in case when queue is empty or @throws {Error} - Throws an error if the queue is empty.
+	 */
+	dequeue() {
+		if (this.isEmpty()) {
+			return console.error('Underflow - queue is empty');
+		} else {
+			return this.queue.shift();
+		}
+	}
+
+	/**
+	 * Returns the front element of the queue without removing it.
+	 * @returns {any} - This method returns the front element of the queue.
+	 * @returns {undefined} - This method does not return any value in case when queue is empty or @throws {Error} - Throws an error if the queue is empty.
+	 */
+	peek() {
+		if (this.isEmpty()) {
+			return console.error('Underflow - queue is empty'); // or throw new Error('Underflow - stack is empty');
+		} else {
+			return this.queue[0];
+		}
+	}
+
+	/**
+	 * Check if the queue is empty.
+	 * @returns {boolean} - This method returns true if the queue is empty, otherwise false.
+	 */
+	isEmpty() {
+		return this.queue.length === 0;
+	}
+}
+
+// Demonstration:
+// Create an instance of the Queue class
+const someQueue = new Queue();
+
+// Add elements onto the queue, following a specific order known as First in, First out (FIFO)
+someQueue.enqueue(1);
+someQueue.enqueue(2);
+someQueue.enqueue(3);
+
+// Display current queue
+console.log(someQueue); // queue: (3) [1, 2, 3]
+
+// See the front element of the queue without removing it
+console.log(someQueue.peek()); // 1
+
+// Retrieve and remove the front element of the queue
+console.log(someQueue.dequeue()); // 1
+console.log(someQueue.dequeue()); // 2
+console.log(someQueue.dequeue()); // 3
+
+console.log(someQueue.dequeue()); // Underflow - queue is empty or Throws an Error: Underflow - queue is empty
+
+// Display current queue
+console.log(someQueue); // Queue {queue: Array(0)}
