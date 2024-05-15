@@ -292,7 +292,7 @@ console.log(someQueue); // Queue {queue: Array(0)}
 
 // Part 1: Data Structure Implementations (Binary Tree)
 /**
- * Represents a Node class (data structure with a value and links to its descendants).
+ * Represents a TreeNode class (data structure with a value and links to its descendants).
  * Contains a value and two child: left and right.
  */
 class TreeNode {
@@ -544,3 +544,132 @@ someNotBinarySearchTree
 // Check if the tree rooted at 'root' is a valid BST
 console.log(isBinarySearchTree(someNotBinarySearchTree.root)); // false
 console.log(isBinarySearchTree(someBinarySearchTree.root)); // true
+
+// Part 1: Data Structure Implementations (Linked List)
+/**
+ * Represents a node in the linked list.
+ * Contains a value and a pointer to the next node.
+ */
+class ListNode {
+	// Initializes a new node.
+	constructor(value) {
+		this.value = value;
+		this.next = null;
+	}
+}
+/**
+ * Represents a singly linked list.
+ * Provides methods for inserting nodes, deleting nodes, and searching for a node.
+ */
+class LinkedList {
+	// Initializes a new node
+	constructor() {
+		this.head = null;
+		this.size = 0; // The size of the entire linked list.
+	}
+
+	/**
+	 * Inserts a new node with the given `newElement` value at the end of the linked list.
+	 * @param {any} newElement - The element to insert into the linked list.
+	 * @returns {LinkedList} - This method returns the updated LinkedList instance.
+	 */
+	insert(newElement) {
+		const node = new ListNode(newElement);
+
+		let current;
+
+		// If the linked list is empty, set the new node as the head
+		if (!this.head) {
+			this.head = node;
+		} else {
+			current = this.head;
+
+			// Traverse to the end of the linked list to find the last node
+			while (current.next) {
+				current = current.next;
+			}
+
+			// Append the new node to the end of the linked list.
+			current.next = node;
+		}
+		// Increment the size of the linked list
+		this.size++;
+
+		return this.head;
+	}
+
+	/**
+	 * Removes the node containing the specified value from the linked list.
+	 * @param {any} element - The value of the element to be removed from the linked list.
+	 * @returns {LinkedList|null} - This method returns the updated LinkedList instance if the node exists, otherwise returns null.
+	 */
+	delete(element) {
+		// If the linked list is empty, return null
+		if (!this.head) {
+			return null;
+		}
+
+		// If the element to be deleted is at the head of the list, remove the head node by updating the head pointer
+		if (this.head.value === element) {
+			this.head = this.head.nest;
+			size--;
+			return this;
+		}
+
+		// Traverse the linked list to find the node containing the specified element
+		let current = this.head;
+		while (current.next) {
+			if (current.next.value === element) {
+				current.next = current.next.next;
+				this.size--;
+				return this;
+			}
+			current = current.next; // Move to the next node
+		}
+		return null;
+	}
+
+	/**
+	 * Searches for the node with the specified value in the linked list.
+	 * @param {any} element - The value to search for in the linked list.
+	 * @returns {ListNode|null} - This method returns the node containing the specified value, or null if not found.
+	 */
+	search(element) {
+		// If the linked list is empty, return null
+		if (!this.head) {
+			return null;
+		}
+
+		// Traverse the linked list to find the node containing the specified element
+		let current = this.head;
+		while (current) {
+			if (current.value === element) {
+				return current;
+			}
+			current = current.next; // Move to the next node
+		}
+
+		return null;
+	}
+}
+// Demonstration:
+// Create a new linked list instance
+const singlyLinkedList = new LinkedList();
+
+// Insert elements into the linked list
+singlyLinkedList.insert('node1');
+singlyLinkedList.insert('node2');
+
+// Display the linked list
+console.log(singlyLinkedList); // LinkedList { head: ListNode {value: 'node1', next: ListNode {value: 'node2'}}}
+console.log(singlyLinkedList.head.next.value); // "node2"
+
+// Insert new element into the linked list
+singlyLinkedList.insert('node3');
+
+// Delete element from the linked list and display updated linked list
+console.log(singlyLinkedList.delete('node2'));
+
+// Search for nodes with specified values
+console.log(singlyLinkedList.search('node1')); // ListNode {value: 'node1', next: ListNode}
+console.log(singlyLinkedList.search('node2')); // null
