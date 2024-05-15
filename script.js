@@ -447,3 +447,100 @@ console.log('Postorder traversal:');
 someBinaryTree.postorderTraversal(someBinaryTree.root, (value) =>
 	console.log(value)
 );
+
+// Part 2: Algorithmic Problems
+/**
+ * Check whether the given root (and its descendants) satisfies the BST property
+ * @param {TreeNode} root - The root node of the tree.
+ * @returns {boolean} - Returns true if the tree is a valid BST, otherwise false.
+ */
+function isBinarySearchTree(root, min = -Infinity, max = Infinity) {
+	//An empty tree is a BST by definition
+
+	if (!root) return true;
+
+	// Check if the current node's value violates the BST property
+	if (root.value < min || root.value > max) {
+		return false;
+	}
+
+	// Recursively check the left and right subtrees
+	return (
+		isBinarySearchTree(root.leftChild, min, root.value) && // the maximum allowable value is the current node's value
+		isBinarySearchTree(root.rightChild, root.value, max) // the minimun allowable value is the current node's value
+	);
+}
+
+/**
+ * Represents a subclass of BinaryTree.
+ * Inherits methods for searching and traversing the tree.
+ * Provides additional functionality for maintaining the Binary Search Tree (BST) property.
+ */
+class BinarySearchTree extends BinaryTree {
+	// Creates an instance of BinarySearchTree.
+	constructor() {
+		// Call the constructor of the parent BinaryTree class
+		super();
+	}
+
+	/**
+	 * Inserts a new node with the given data into the BinarySearchTree.
+	 * @param {any} data - The data to be added as a value for the new node.
+	 * @returns {BinarySearchTree} - This method returns the updated BinarySearchTree instance.
+	 */
+	insert(data) {
+		const newNode = data instanceof TreeNode ? data : new TreeNode(data);
+
+		if (!this.root) {
+			//if the tree is empty, set the new node as the root node.
+			this.root = newNode;
+			return this;
+		}
+
+		// If the tree is not empty
+		let current = this.root; // Start from the root node
+
+		// Continue iterative insertion until a suitable insertion point for the new node is found.
+		while (true) {
+			// Traverse to the left subtree of the current node.
+			if (data < current.value) {
+				if (!current.leftChild) {
+					current.leftChild = newNode; // Insert the new node as the left child of the current node
+					return this;
+				}
+				current = current.leftChild;
+				// Traverse to the right subtree of the current node.
+			} else {
+				if (!current.rightChild) {
+					current.rightChild = newNode; // Insert the new node as the right child of the current node
+					return this;
+				}
+				current = current.rightChild;
+			}
+		}
+	}
+}
+
+const someBinarySearchTree = new BinarySearchTree();
+someBinarySearchTree
+	.insert(10)
+	.insert(15)
+	.insert(5)
+	.insert(7)
+	.insert(3)
+	.insert(17)
+	.insert(12);
+
+const someNotBinarySearchTree = new BinaryTree();
+someNotBinarySearchTree
+	.insert(10)
+	.insert(15)
+	.insert(5)
+	.insert(7)
+	.insert(3)
+	.insert(17)
+	.insert(12);
+
+// Check if the tree rooted at 'root' is a valid BST
+console.log(isBinarySearchTree(someNotBinarySearchTree.root)); // false
+console.log(isBinarySearchTree(someBinarySearchTree.root)); // true
