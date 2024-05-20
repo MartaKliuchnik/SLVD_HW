@@ -673,3 +673,86 @@ console.log(singlyLinkedList.delete('node2'));
 // Search for nodes with specified values
 console.log(singlyLinkedList.search('node1')); // ListNode {value: 'node1', next: ListNode}
 console.log(singlyLinkedList.search('node2')); // null
+
+// Part 2: Algorithmic Problems - Floyd's Cycle Detection Algorithm (Tortoise and Hare algorithm)
+/**
+ * Check whether the given linked list has a cycle.
+ * @param {ListNode} head - The head node of the LinkedList.
+ * @returns {boolean} - This function returns true if the linked list has a cycle, otherwise false.
+ */
+function hasCycle(head) {
+	// If head doesn't exist immediately return false, there is no cycle.
+	if (!head || !head.next) {
+		return false;
+	}
+
+	// Initiate a slow "tortoise" and fast "hare" pointer (both pointers start at the head)
+	let tortoise = head;
+	let hare = head;
+
+	// Traverse the linked list until the fast "hare" pointer, and the next node still isn't null
+	while (hare && hare.next) {
+		// Move the tortoise (one node at a time), and the hare (two nodes at a time).
+		tortoise = tortoise.next;
+		hare = hare.next.next;
+
+		// If the tortoise and hare are pointing to the same node, there is a cycle.
+		if (tortoise === hare) {
+			return true;
+		}
+	}
+	// If hare and/or hare.next is null, there is no cycle
+	return false;
+}
+// Demonstration:
+// Create a new linked list instance
+const someLinkedList = new LinkedList();
+
+// Insert elements into the linked list
+someLinkedList.insert('1');
+someLinkedList.insert('3');
+someLinkedList.insert('2');
+someLinkedList.insert('5');
+
+/**
+ * Create a cycle in the linked list at the k-th position
+ * @param {ListNode} head - The head node of the LinkedList.
+ * @param {number} k - The position to create the loop.
+ * @returns {ListNode} - Returns the head of the linked list with loop at k-th element.
+ */
+function makeloop(head, k) {
+	if (k <= 0 || !head) {
+		return head;
+	}
+
+	let temp = head;
+	let count = 1;
+
+	// Traverse the linked list until the loop point is found
+	while (count < k && temp.next) {
+		temp = temp.next;
+		count++;
+	}
+
+	// If k is larger than the length of the list, no loop is created
+	if (count < k) {
+		return head;
+	}
+
+	// Backup the joint point
+	let joint_point = temp;
+
+	// Traverse remaining nodes
+	while (temp.next) temp = temp.next;
+
+	// Join the last node to k-th element
+	temp.next = joint_point;
+	return head;
+}
+
+// Add loop at 2nd element of the linked list
+const cycleLinkedList = makeloop(someLinkedList.head, 2); // 1 -> 3 -> 2 -> 5 -> (cycle:3->2->5) -> ...
+
+// Display the result of checking two different linked list
+console.log(hasCycle(cycleLinkedList)); // true (linked list has a cycle)
+console.log(hasCycle(singlyLinkedList)); // false (linked list does not have a cycle)
