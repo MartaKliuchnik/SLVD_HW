@@ -545,15 +545,216 @@ someNotBinarySearchTree
 console.log(isBinarySearchTree(someNotBinarySearchTree.root)); // false
 console.log(isBinarySearchTree(someBinarySearchTree.root)); // true
 
+// Part 1: Data Structure Implementations (Graph)
+/**
+ * Represents a basic Node.
+ */
+class Node {
+	/**
+	 * Initializes a new node with a value.
+	 * @param {any} value - The value of the node.
+	 */
+	constructor(value) {
+		this.value = value;
+	}
+}
+/**
+ * Represents the Node in a graph.
+ * Extends the base Node class.
+ * Contains vertex’s value and adjacent vertices.
+ */
+class GraphNode extends Node {
+	/**
+	 * Initialize a node
+	 * @param {any} value - The value of the node.
+	 */
+	constructor(value) {
+		super(value);
+		this.adjacents = [];
+	}
+
+	/**
+	 * Add an adjacent node
+	 * @param {Node} node - The node to be added as adjacent.
+	 * @returns {undefined} - This method does not return any value.
+	 */
+	addAdjacent(node) {
+		this.adjacents.push(node);
+	}
+
+	/**
+	 * Get all adjacent nodes
+	 * @returns {GraphNode[]} - An array of adjacent nodes.
+	 */
+	getAdjacents() {
+		return this.adjacents;
+	}
+}
+/**
+ * Represents a Graph (Adjacency List).
+ * Provides methods for adding vertices and edges, performing depth-first search (DFS), and breadth-first search (BFS).
+ */
+class Graph {
+	/**
+	 * Initialize the nodes map
+	 * @param {Symbol} edgeDirection either `Graph.DIRECTED` or `Graph.UNDIRECTED`
+	 */
+	constructor(edgeDirection = Graph.DIRECTED) {
+		this.nodes = new Map();
+		this.edgeDirection = edgeDirection;
+	}
+
+	/**
+	 * Create a connection between the source node and the destination node.
+	 * @param {any} source - The source node.
+	 * @param {any} destination - The destination node.
+	 * @returns {[Node, Node]} - This method returns source/destination node pair
+	 */
+	addEdge(source, destination) {
+		const sourceNode = this.addVertex(source);
+		const destinationNode = this.addVertex(destination);
+
+		sourceNode.addAdjacent(destinationNode);
+
+		// Create the link from destination to source for undirected graph
+		if (this.edgeDirection === Graph.UNDIRECTED) {
+			destinationNode.addAdjacent(sourceNode);
+		}
+
+		return [sourceNode, destinationNode];
+	}
+
+	/**
+	 * Add a node to the graph.
+	 * @param {any} value - The node's value.
+	 * @returns {Node} - This method returns the new node or the existing one if it already exits.
+	 */
+	addVertex(value) {
+		if (this.nodes.has(value)) {
+			return this.nodes.get(value);
+		} else {
+			const vertex = new GraphNode(value);
+			this.nodes.set(value, vertex);
+			return vertex;
+		}
+	}
+
+	/**
+	 * Depth First Search (from an initial vertex, the first adjacent node of each vertex found)
+	 * @param {any} start - The starting node's value.
+	 * @returns {Set<any>} - This method returns a set of visited nodes.
+	 */
+	dfs(start) {
+		const startNode = this.nodes.get(start.value); // Get the starting node from the graph
+		// If the starting node does not exist, return the empty set of visited nodes
+		if (!startNode) return new Set();
+
+		const visited = new Set();
+		// DFS explores as far as possible along each branch before backtracking.
+		// This behavior is naturally supported by a stack data structure, with (LIFO) principle.
+		const visitList = new Stack(); // Initialize a Stack instance
+
+		visitList.push(startNode);
+
+		// Continue the DFS Loop while there are nodes in the stack
+		while (!visitList.isEmpty()) {
+			const node = visitList.pop();
+
+			// If the node has not been visited yet
+			if (!visited.has(node.value)) {
+				visited.add(node.value); // Mark the node as visited by adding it to the visited set
+
+				// Iterate over all adjacent nodes
+				node.getAdjacents().forEach((adj) => {
+					// If the adjacent node has not been visited
+					if (!visited.has(adj.value)) {
+						visitList.push(adj);
+					}
+				});
+			}
+		}
+		return visited;
+	}
+
+	/**
+	 * Breadth First Search (involves visiting all the connected nodes of a graph in a level-by-level manner)
+	 * @param {any} start - The starting node's value.
+	 * @returns {Set<any>} - This method returns a set of visited nodes.
+	 */
+	bfs(start) {
+		const startNode = this.nodes.get(start.value);
+
+		const visited = new Set();
+		// BFS explores all neighbors at the present depth prior to moving on to nodes at the next depth level.
+		// This behavior is naturally supported by a queue data structure, with (FIFO) principle.
+		const queue = new Queue();
+
+		// If the starting node does not exist, return the empty set of visited nodes
+		if (!startNode) return visited;
+
+		queue.enqueue(startNode);
+
+		// Continue the BFS Loop while there are nodes in the stack
+		while (!queue.isEmpty()) {
+			const node = queue.dequeue();
+			// If the node has not been visited yet
+			if (!visited.has(node.value)) {
+				visited.add(node.value);
+
+				// Iterate over all adjacent nodes
+				node.getAdjacents().forEach((adj) => {
+					// If the adjacent node has not been visited
+					if (!visited.has(adj.value)) {
+						queue.enqueue(adj);
+					}
+				});
+			}
+		}
+		return visited;
+	}
+}
+
+Graph.UNDIRECTED = Symbol('undirected graph'); // two-ways edges
+Graph.DIRECTED = Symbol('directed graph'); // one-way edges
+
+// Demonstration:
+// Create a new Graph instance
+const someGraph = new Graph(Graph.UNDIRECTED);
+
+// Create a connection between the source node and the destination node.
+const [firstNode] = someGraph.addEdge(1, 2);
+someGraph.addEdge(1, 3);
+someGraph.addEdge(1, 4);
+someGraph.addEdge(5, 2);
+someGraph.addEdge(6, 3);
+someGraph.addEdge(7, 3);
+someGraph.addEdge(8, 4);
+someGraph.addEdge(9, 5);
+someGraph.addEdge(10, 6);
+
+// Demonstration for Depth First search
+const dfsResult = someGraph.dfs(firstNode);
+const dfsValues = Array.from(dfsResult);
+console.log('DFS Result:', dfsValues); // [1, 4, 8, 3, 7, 6, 10, 2, 5, 9]
+
+// Demonstration for Breadth First search
+const bfsResult = someGraph.bfs(firstNode);
+const bfsValues = Array.from(bfsResult);
+console.log('BFS Result:', bfsValues); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
 // Part 1: Data Structure Implementations (Linked List)
 /**
  * Represents a node in the linked list.
+ * Extends the base Node class.
  * Contains a value and a pointer to the next node.
  */
-class ListNode {
-	// Initializes a new node.
+class ListNode extends Node {
+	/**
+	 * Initializes a new node with a value.
+	 * @param {any} value - The value of the node.
+	 */
 	constructor(value) {
-		this.value = value;
+		super(value);
 		this.next = null;
 	}
 }
