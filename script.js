@@ -290,6 +290,32 @@ console.log(someQueue.dequeue()); // Underflow - queue is empty or Throws an Err
 // Display current queue
 console.log(someQueue); // Queue {queue: Array(0)}
 
+/**
+ * Represents the PriorityQueue for realizing Dijkstra’s Shortest Path Algorithm.
+ * Extends the base Queue class.
+ * Contains vertex’s value and adjacent vertices.
+ */
+class PriorityQueue extends Queue {
+	/**
+	 * Enqueues an element with a specified priority.
+	 * @param {any} element - The element to be enqueued.
+	 * @param {number} priority - The priority associated with the element.
+	 * @returns {undefined} - This method does not return any value.
+	 */
+	enqueue(element, priority) {
+		this.queue.push({ element, priority });
+		this.sort();
+	}
+
+	/**
+	 * Sorts the elements in the queue based on their priority.
+	 * @returns {undefined} - This method does not return any value.
+	 */
+	sort() {
+		this.queue.sort((a, b) => a.priority - b.priority);
+	}
+}
+
 // Part 1: Data Structure Implementations (Binary Tree)
 /**
  * Represents a TreeNode class (data structure with a value and links to its descendants).
@@ -570,24 +596,25 @@ class GraphNode extends Node {
 	 */
 	constructor(value) {
 		super(value);
-		this.adjacents = [];
+		this.adjacents = new Map();
 	}
 
 	/**
 	 * Add an adjacent node
 	 * @param {Node} node - The node to be added as adjacent.
+	 * @param {number} weight -  The weight of the edge between the current node and the adjacent node.
 	 * @returns {undefined} - This method does not return any value.
 	 */
-	addAdjacent(node) {
-		this.adjacents.push(node);
+	addAdjacent(node, weight) {
+		this.adjacents.set(node, weight);
 	}
 
 	/**
 	 * Get all adjacent nodes
-	 * @returns {GraphNode[]} - An array of adjacent nodes.
+	 * @returns {Array<[GraphNode, number]>} - This method returns an array of tuples containing adjacent nodes and their associated weights.
 	 */
 	getAdjacents() {
-		return this.adjacents;
+		return Array.from(this.adjacents.entries());
 	}
 }
 /**
@@ -608,17 +635,16 @@ class Graph {
 	 * Create a connection between the source node and the destination node.
 	 * @param {any} source - The source node.
 	 * @param {any} destination - The destination node.
+	 * @param {any} weight - The weight node.
 	 * @returns {[Node, Node]} - This method returns source/destination node pair
 	 */
-	addEdge(source, destination) {
+	addEdge(source, destination, weight = 0) {
 		const sourceNode = this.addVertex(source);
 		const destinationNode = this.addVertex(destination);
 
-		sourceNode.addAdjacent(destinationNode);
-
-		// Create the link from destination to source for undirected graph
+		sourceNode.addAdjacent(destinationNode, weight);
 		if (this.edgeDirection === Graph.UNDIRECTED) {
-			destinationNode.addAdjacent(sourceNode);
+			destinationNode.addAdjacent(sourceNode, weight);
 		}
 
 		return [sourceNode, destinationNode];
@@ -665,12 +691,11 @@ class Graph {
 				visited.add(node.value); // Mark the node as visited by adding it to the visited set
 
 				// Iterate over all adjacent nodes
-				node.getAdjacents().forEach((adj) => {
-					// If the adjacent node has not been visited
-					if (!visited.has(adj.value)) {
-						visitList.push(adj);
+				for (let [adjNode, _] of node.getAdjacents()) {
+					if (!visited.has(adjNode.value)) {
+						visitList.push(adjNode);
 					}
-				});
+				}
 			}
 		}
 		return visited;
@@ -702,15 +727,32 @@ class Graph {
 				visited.add(node.value);
 
 				// Iterate over all adjacent nodes
-				node.getAdjacents().forEach((adj) => {
-					// If the adjacent node has not been visited
-					if (!visited.has(adj.value)) {
-						queue.enqueue(adj);
+				for (let [adjNode, _] of node.getAdjacents()) {
+					if (!visited.has(adjNode.value)) {
+						queue.enqueue(adjNode);
 					}
-				});
+				}
 			}
 		}
 		return visited;
+	}
+
+	/**
+	 * Get the weight of the edge between two vertices in the graph.
+	 * @param {any} source - The value of the source vertex.
+	 * @param {any} destination - The value of the destination vertex.
+	 * @returns {number} - This method returns the weight of the edge between the source and destination vertices, or returns Infinity (if no edge exists).
+	 */
+	getWeight(source, destination) {
+		const sourceNode = this.nodes.get(source);
+		const destinationNode = this.nodes.get(destination);
+
+		// If the source and destination nodes exist
+		if (sourceNode && destinationNode) {
+			return sourceNode.adjacents.get(destinationNode);
+		}
+		// If no edge exists
+		return Infinity;
 	}
 }
 
@@ -718,29 +760,185 @@ Graph.UNDIRECTED = Symbol('undirected graph'); // two-ways edges
 Graph.DIRECTED = Symbol('directed graph'); // one-way edges
 
 // Demonstration:
-// Create a new Graph instance
-const someGraph = new Graph(Graph.UNDIRECTED);
+// Create a new Graph instance (unweighted)
+const someUnweightedGraph = new Graph(Graph.UNDIRECTED);
 
 // Create a connection between the source node and the destination node.
-const [firstNode] = someGraph.addEdge(1, 2);
-someGraph.addEdge(1, 3);
-someGraph.addEdge(1, 4);
-someGraph.addEdge(5, 2);
-someGraph.addEdge(6, 3);
-someGraph.addEdge(7, 3);
-someGraph.addEdge(8, 4);
-someGraph.addEdge(9, 5);
-someGraph.addEdge(10, 6);
+const [firstNode] = someUnweightedGraph.addEdge(1, 2);
+someUnweightedGraph.addEdge(1, 3);
+someUnweightedGraph.addEdge(1, 4);
+someUnweightedGraph.addEdge(5, 2);
+someUnweightedGraph.addEdge(6, 3);
+someUnweightedGraph.addEdge(7, 3);
+someUnweightedGraph.addEdge(8, 4);
+someUnweightedGraph.addEdge(9, 5);
+someUnweightedGraph.addEdge(10, 6);
 
 // Demonstration for Depth First search
-const dfsResult = someGraph.dfs(firstNode);
+const dfsResult = someUnweightedGraph.dfs(firstNode);
 const dfsValues = Array.from(dfsResult);
 console.log('DFS Result:', dfsValues); // [1, 4, 8, 3, 7, 6, 10, 2, 5, 9]
 
 // Demonstration for Breadth First search
-const bfsResult = someGraph.bfs(firstNode);
+const bfsResult = someUnweightedGraph.bfs(firstNode);
 const bfsValues = Array.from(bfsResult);
 console.log('BFS Result:', bfsValues); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+// Part 2: Algorithmic Problems (Breadth-First Search (BFS))
+/**
+ * Finds the shortest path between two vertices in a graph using Breadth-First Search (BFS).
+ * @param {Map<any, GraphNode>} nodes - The map of nodes in the graph.
+ * @param {any} start - The value of the start vertex.
+ * @param {any} end - The value of the end vertex.
+ * @returns {GraphNode[]} - This function returns an array representing the shortest path from the start vertex to the end vertex.
+ */
+function bfsShortestPath(nodes, start, end) {
+	const startNode = nodes.get(start);
+
+	// If the starting node does not exist or the end node does not exist, return an empty path
+	if (!startNode || !nodes.has(end)) return [];
+
+	const visited = new Set();
+	const queue = new Queue();
+	const path = new Map(); // Map to store the predecessor of each node in the shortest path
+
+	queue.enqueue(startNode);
+	visited.add(startNode);
+
+	while (!queue.isEmpty()) {
+		const node = queue.dequeue();
+
+		// If the current node is the destination, construct and return the shortest path
+		if (node.value === end) {
+			const shortestPath = [end];
+			let current = end;
+			while (current !== start) {
+				current = path.get(current);
+				shortestPath.unshift(current);
+			}
+			return shortestPath;
+		}
+
+		// Iterate over all adjacent nodes
+		for (let [adjNode, _] of node.getAdjacents()) {
+			if (!visited.has(adjNode)) {
+				queue.enqueue(adjNode);
+				visited.add(adjNode);
+				path.set(adjNode.value, node.value); // Set the predecessor of the adjacent node
+			}
+		}
+	}
+
+	// If no path is found, return an empty array
+	return [];
+}
+
+// Demonstration:
+// Use someUnweightedGraph Graph instance (unweighted)
+// Define the start and end vertices for finding the shortest path
+const startVertex = 1;
+const endVertex = 6;
+
+// Find the shortest path using BFS
+const shortestPath = bfsShortestPath(
+	someUnweightedGraph.nodes,
+	startVertex,
+	endVertex
+);
+
+// Demonstration shortest paths
+console.log(
+	'Shortest path from vertex',
+	startVertex,
+	'to vertex',
+	endVertex,
+	':',
+	shortestPath
+); // Shortest path from vertex 1 to vertex 6 : (3) [1, 3, 6]
+
+// Part 2: Algorithmic Problems (Dijkstra's algorithm)
+/**
+ * Finds the shortest paths from a given start vertex to all other vertices in a graph using Dijkstra's algorithm (for weighted graphs).
+ * @param {Graph} graph - The graph in which to find the shortest paths.
+ * @param {GraphNode} start - The starting vertex for finding shortest paths.
+ * @returns {Map<GraphNode, { distance: number, path: GraphNode[] }>} - This function returns a map containing the shortest distances and paths from the start vertex to all other vertices.
+ */
+function dijkstra(graph, start) {
+	const distances = new Map();
+	const predecessors = new Map();
+	const priorityQueue = new PriorityQueue();
+
+	// Initialize distances with Infinity for all nodes except the start vertex
+	for (let vertex of graph.nodes.values()) {
+		distances.set(vertex, Infinity);
+	}
+	distances.set(start, 0);
+
+	priorityQueue.enqueue(start, 0);
+
+	// Main loop of Dijkstra's algorithm
+	while (!priorityQueue.isEmpty()) {
+		const currentVertex = priorityQueue.dequeue().element;
+
+		// Update distances and predecessors for outgoing edges
+		for (let [neighbor, weight] of currentVertex.getAdjacents()) {
+			const totalDistance = distances.get(currentVertex) + weight;
+
+			if (totalDistance < distances.get(neighbor)) {
+				distances.set(neighbor, totalDistance);
+				predecessors.set(neighbor, currentVertex);
+				priorityQueue.enqueue(neighbor, totalDistance);
+			}
+		}
+	}
+
+	// Construct the shortest path for each vertex
+	const shortestPaths = new Map();
+	for (let [vertex, distance] of distances) {
+		const path = [];
+		let current = vertex;
+		while (current !== start) {
+			path.unshift(current);
+			current = predecessors.get(current);
+		}
+		path.unshift(start);
+		shortestPaths.set(vertex, { distance, path });
+	}
+
+	return shortestPaths;
+}
+
+// Demonstration:
+// Create a new Graph instance (weighted)
+const someWeightedGraph = new Graph(Graph.UNDIRECTED);
+
+// Create a connection between the source node and the destination node.
+someWeightedGraph.addEdge(1, 2, 1);
+someWeightedGraph.addEdge(1, 3, 4);
+someWeightedGraph.addEdge(1, 4, 7);
+someWeightedGraph.addEdge(2, 5, 3);
+someWeightedGraph.addEdge(3, 6, 5);
+someWeightedGraph.addEdge(3, 7, 2);
+someWeightedGraph.addEdge(4, 8, 1);
+someWeightedGraph.addEdge(5, 9, 4);
+someWeightedGraph.addEdge(6, 10, 6);
+
+// Run Dijkstra's algorithm from node 1
+const shortestPaths = dijkstra(
+	someWeightedGraph,
+	someWeightedGraph.nodes.get(1)
+);
+
+// Demonstration shortest paths
+shortestPaths.forEach((value, key) => {
+	console.log(
+		`Shortest distance from vertex 1 to vertex ${key.value}: ${value.distance}`
+	);
+	console.log(
+		`Shortest path: ${value.path.map((vertex) => vertex.value).join(' -> ')}`
+	);
+	console.log('---');
+});
 
 // Part 1: Data Structure Implementations (Linked List)
 /**
