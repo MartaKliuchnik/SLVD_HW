@@ -64,6 +64,37 @@ class LinkedList {
 
 		return null;
 	}
+
+	/**
+	 * Removes the node containing the specified value from the linked list.
+	 * @param {any} element - The value of the element to be removed from the linked list.
+	 * @returns {LinkedList|null} - This method returns the updated LinkedList instance if the node exists, otherwise returns null.
+	 */
+	delete(key) {
+		// If the linked list is empty, return null
+		if (!this.head) {
+			return null;
+		}
+
+		// If the element to be deleted is at the head of the list, remove the head node by updating the head pointer
+		if (this.head.key === key) {
+			this.head = this.head.next;
+			this.size--;
+			return this;
+		}
+
+		// Traverse the linked list to find the node containing the specified element
+		let current = this.head;
+		while (current.next) {
+			if (current.next.key === key) {
+				current.next = current.next.next;
+				this.size--;
+				return this;
+			}
+			current = current.next; // Move to the next node
+		}
+		return null;
+	}
 }
 
 export default LinkedList;

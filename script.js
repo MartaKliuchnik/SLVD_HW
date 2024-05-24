@@ -1,5 +1,6 @@
 import { polynomialRollingHash } from './hash-function/polynomialRollingHash.js';
 import SeparateChaining from './collision-handling/separateChaining.js';
+import HashTable from './hash-table/hashTable.js';
 
 // Define two different strings representing user names
 const user1 = 'alex';
@@ -37,3 +38,23 @@ console.log(someHashTable); // Hash table with collision handled at index 2: Lin
 // Retrieve elements
 console.log(someHashTable.find('alex')); // Alex Smit
 console.log(someHashTable.find('john')); // John Smit
+
+// Hash Table:
+// Create a new hash table with size 5
+const fruitsHashTable = new HashTable(5);
+
+// Insert some elements (using linked lists)
+fruitsHashTable.insert('apple', 'green');
+fruitsHashTable.insert('lemon', 'yellow');
+fruitsHashTable.insert('strawberry', 'red');
+
+// Retrieve elements
+const retrieveApple = fruitsHashTable.retrieve('apple');
+console.log(retrieveApple); // green
+
+// Delete an element 'lemon'
+fruitsHashTable.delete('lemon');
+console.log(fruitsHashTable.retrieve('lemon')); // undefined
+
+// Check the hash table structure
+console.log(fruitsHashTable); // Updated hash table without element 'lemon'
