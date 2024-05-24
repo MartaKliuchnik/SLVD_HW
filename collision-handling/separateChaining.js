@@ -1,0 +1,49 @@
+import LinkedList from '../linked-list/linkedList.js';
+import { polynomialRollingHash } from '../hash-function/polynomialRollingHash.js';
+
+/**
+ * Represents a way dealing with collisions (where two keys hash to the same index in the table).
+ * Involves calculating the hash index, inserting an element into the hash table, and handling collisions by maintaining linked lists at each index.
+ */
+class SeparateChaining {
+	/**
+	 * Initializes a new table with a specified size, which each element represents instance of LinkedList.
+	 * @param {number} size - The length of the table.
+	 */
+	constructor(size) {
+		this.table = new Array(size).fill(null).map(() => new LinkedList());
+	}
+
+	/**
+	 * Calculates the hash index for a given key using a polynomial rolling hash function..
+	 * @param {string} key - The key for which to calculate the hash index.
+	 * @return {number} - The hash index associated with the key.
+	 */
+	hash(key) {
+		return polynomialRollingHash(key) % this.table.length;
+	}
+
+	/**
+	 * Adds an element to the hash table using separate chaining.
+	 * @param {string} key - The key of the element.
+	 * @param {any} value - The value associated with the key.
+	 */
+	insert(key, value) {
+		const index = this.hash(key);
+		console.log(`${key} = ${index}`);
+		this.table[index].insert(key, value);
+	}
+
+	/**
+	 * Searches for the value associated with the given key in the hash table.
+	 * @param {string} key - The key of the element.
+	 * @return {any | undefined} - This function returns the node's value associated with the key, or undefined if not found.
+	 */
+	find(key) {
+		const index = this.hash(key);
+		const node = this.table[index].search(key);
+		return node ? node.value : undefined;
+	}
+}
+
+export default SeparateChaining;
