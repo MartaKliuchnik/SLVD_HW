@@ -1,5 +1,6 @@
 /**
  * Calculates the hash value of a string using a polynomial rolling hash function.
+ * Time complexity: O(n) - The function computes the hash value in linear time relative to the length of the string n.
  * @param {string} str - The input string.
  * @returns {number} - The hashing value, which can be used as an index for 'str' in a hash table.
  */

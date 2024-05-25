@@ -29,6 +29,9 @@ class HashTable {
 
 	/**
 	 * Adds an element to the hash table using separate chaining.
+	 * Time Complexity:
+	 * O(1) - the insertion operation takes constant time;
+	 * worst case: O(n) - all keys hash to the same index (collisions) ,where n is the number of elements in the hash table.
 	 * @param {string} key - The key of the element.
 	 * @param {any} value - The value associated with the key.
 	 *
@@ -40,6 +43,9 @@ class HashTable {
 
 	/**
 	 * Searches for the value associated with the given key in the hash table.
+	 * Time Complexity:
+	 * O(1) - the search operation takes constant time;
+	 * worst case: O(n) - all keys hash to the same index (collisions) ,where n is the number of elements in the hash table.
 	 * @param {string} key - The key of the element.
 	 * @return {any | undefined} - This function returns the node's value associated with the key, or undefined if not found.
 	 */
@@ -51,6 +57,9 @@ class HashTable {
 
 	/**
 	 * Removes the node containing the specified value from the hash table.
+	 * Time Complexity:
+	 * O(1) - the deletion operation takes constant time;
+	 * worst case: O(n) - all keys hash to the same index (collisions) ,where n is the number of elements in the hash table.
 	 * @param {string} key - The key of the element.
 	 * @returns {HashTable|null} - This method returns the updated HashTable instance if the node exists, otherwise returns null.
 	 */

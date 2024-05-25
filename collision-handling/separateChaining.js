@@ -27,6 +27,9 @@ class SeparateChaining {
 
 	/**
 	 * Adds an element to the hash table using separate chaining.
+	 * Time Complexity:
+	 * O(1) - the insertion operation takes constant time;
+	 * worst case: O(n) - all keys hash to the same index (collisions) ,where n is the number of elements in the hash table.
 	 * @param {string} key - The key of the element.
 	 * @param {any} value - The value associated with the key.
 	 */
@@ -37,6 +40,9 @@ class SeparateChaining {
 
 	/**
 	 * Searches for the value associated with the given key in the hash table.
+	 * Time Complexity:
+	 * O(1) - the search operation takes constant time;
+	 * worst case: O(n) - all keys hash to the same index (collisions) ,where n is the number of elements in the hash table.
 	 * @param {string} key - The key of the element.
 	 * @return {any | undefined} - This function returns the node's value associated with the key, or undefined if not found.
 	 */
