@@ -3,7 +3,7 @@
  * @param {string} str - The input string.
  * @returns {number} - The hashing value, which can be used as an index for 'str' in a hash table.
  */
-export function polynomialRollingHash(str) {
+function polynomialRollingHash(str) {
 	/**
 	 * The prime number for base (p) ensures:
 	 * - the function generates a uniform distribution of hash values, which minimizes collisions.
@@ -35,3 +35,4 @@ export function polynomialRollingHash(str) {
 
 	return hash;
 }
+module.exports = { polynomialRollingHash };

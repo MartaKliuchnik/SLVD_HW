@@ -1,5 +1,6 @@
-import ListNode from './listNode.js';
+const ListNode = require('./listNode.js');
 
+// import ListNode from './listNode.js';
 /**
  * Represents a singly linked list.
  * Provides methods for inserting nodes, deleting nodes, and searching for a node.
@@ -97,4 +98,4 @@ class LinkedList {
 	}
 }
 
-export default LinkedList;
+module.exports = LinkedList;

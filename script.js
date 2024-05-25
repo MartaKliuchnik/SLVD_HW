@@ -1,6 +1,8 @@
-import { polynomialRollingHash } from './hash-function/polynomialRollingHash.js';
-import SeparateChaining from './collision-handling/separateChaining.js';
-import HashTable from './hash-table/hashTable.js';
+const {
+	polynomialRollingHash,
+} = require('./hash-function/polynomialRollingHash');
+const SeparateChaining = require('./collision-handling/separateChaining.js');
+const HashTable = require('./hash-table/hashTable.js');
 
 // Define two different strings representing user names
 const user1 = 'alex';

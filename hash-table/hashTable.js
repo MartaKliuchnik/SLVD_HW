@@ -1,9 +1,12 @@
-import { polynomialRollingHash } from '../hash-function/polynomialRollingHash.js';
-import LinkedList from '../linked-list/linkedList.js';
-
+const {
+	polynomialRollingHash,
+} = require('../hash-function/polynomialRollingHash.js');
+const LinkedList = require('../linked-list/linkedList.js');
+// import { polynomialRollingHash } from '../hash-function/polynomialRollingHash.js';
+// import LinkedList from '../linked-list/linkedList.js';
 /**
  * Represents a hash table.
- * Provides methods for calculating hash, inserting inserting key-value pairs, retrieving values by key, and deleting key-value pairs.
+ * Provides methods for calculating hash, inserting key-value pairs, retrieving values by key, and deleting key-value pairs.
  */
 class HashTable {
 	/**
@@ -56,5 +59,5 @@ class HashTable {
 		return this.table[index].delete(key);
 	}
 }
-
-export default HashTable;
+// export default HashTable;
+module.exports = HashTable;

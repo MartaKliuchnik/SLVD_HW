@@ -15,4 +15,4 @@ class ListNode {
 	}
 }
 
-export default ListNode;
+module.exports = ListNode;

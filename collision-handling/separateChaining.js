@@ -1,5 +1,7 @@
-import LinkedList from '../linked-list/linkedList.js';
-import { polynomialRollingHash } from '../hash-function/polynomialRollingHash.js';
+const LinkedList = require('../linked-list/linkedList.js');
+const {
+	polynomialRollingHash,
+} = require('../hash-function/polynomialRollingHash.js');
 
 /**
  * Represents a way dealing with collisions (where two keys hash to the same index in the table).
@@ -45,4 +47,4 @@ class SeparateChaining {
 	}
 }
 
-export default SeparateChaining;
+module.exports = SeparateChaining;
