@@ -16,6 +16,8 @@ class HashTable {
 	constructor(size) {
 		this.table = new Array(size).fill(null).map(() => new LinkedList());
 		this.size = size;
+		this.count = 0; // The number of key-value pairs in the hash table
+		this.loadFactorThreshold = 0.6; // Load factor threshold for resizing
 	}
 
 	/**
@@ -39,6 +41,12 @@ class HashTable {
 	insert(key, value) {
 		const index = this.calculateHash(key);
 		this.table[index].insert(key, value);
+		this.count++;
+
+		// Resize the table if the load factor exceeds the threshold
+		if (this.count / this.size > this.loadFactorThreshold) {
+			this.resize(this.size * 2);
+		}
 	}
 
 	/**
@@ -59,13 +67,39 @@ class HashTable {
 	 * Removes the node containing the specified value from the hash table.
 	 * Time Complexity:
 	 * O(1) - the deletion operation takes constant time;
-	 * worst case: O(n) - all keys hash to the same index (collisions) ,where n is the number of elements in the hash table.
+	 * worst case: O(n) - all keys hash to the same index (collisions), where n is the number of elements in the hash table.
 	 * @param {string} key - The key of the element.
-	 * @returns {HashTable|null} - This method returns the updated HashTable instance if the node exists, otherwise returns null.
+	 * @returns {LinkedList|null} - This method returns the updated LinkedList instance if the node exists, otherwise returns null.
 	 */
 	delete(key) {
 		const index = this.calculateHash(key);
-		return this.table[index].delete(key);
+		const deletedElement = this.table[index].delete(key);
+		// If a node was successfully deleted
+		if (deletedElement) {
+			this.count--; // Decrement the count
+		}
+		return deletedElement;
+	}
+
+	/**
+	 * Resizes the hash table to a new size and rehashes all existing elements.
+	 * Time complexity: O(n) - rehash all elements.
+	 * @param {number} newSize - The new size of the hash table.
+	 */
+	resize(newSize) {
+		const currentHashTable = this.table;
+		this.table = new Array(newSize).fill(null).map(() => new LinkedList());
+		this.size = newSize;
+		this.count = 0; // Reset the count and re-insert elements
+
+		// Rehash all elements from the old table to the new table
+		for (let list of currentHashTable) {
+			let current = list.head;
+			while (current) {
+				this.insert(current.key, current.value);
+				current = current.next;
+			}
+		}
 	}
 }
 // export default HashTable;

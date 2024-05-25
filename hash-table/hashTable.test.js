@@ -88,6 +88,9 @@ describe('Hash Table: ', () => {
 		// Delete the element with key 'alex'
 		hashTable.delete('alex');
 
+		// Verify that the count (key-value pairs) is decreased by 1
+		expect(hashTable.count).toBe(0);
+
 		// Attempt to retrieve the value associated with key 'alex'
 		const deletedValue = hashTable.retrieve('alex');
 
@@ -105,5 +108,26 @@ describe('Hash Table: ', () => {
 
 		// Verify that the result is null, indicating that the element was not found
 		expect(result).toBeNull();
+	});
+
+	// Test case for resizing the hash table
+	test('resizes the hash table based on load factor threshold', () => {
+		// Insert elements into the hash table to exceed the load factor threshold
+		hashTable.insert('alex', 'Alex Smith');
+		hashTable.insert('john', 'John Smith');
+		hashTable.insert('mike', 'Mike Smith');
+		hashTable.insert('tom', 'Tom Smith');
+
+		// Verify that the updated hash table count is 4
+		expect(hashTable.count).toBe(4);
+
+		// Verify that the updated hash table size changed from 5 to 10
+		expect(hashTable.size).toBe(10);
+
+		// Verify that all elements are still retrievable after resizing
+		expect(hashTable.retrieve('alex')).toBe('Alex Smith');
+		expect(hashTable.retrieve('john')).toBe('John Smith');
+		expect(hashTable.retrieve('mike')).toBe('Mike Smith');
+		expect(hashTable.retrieve('tom')).toBe('Tom Smith');
 	});
 });
