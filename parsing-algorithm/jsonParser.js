@@ -1,4 +1,7 @@
+import ErrorHandling from '../error-handling/errorHandling.js';
 import unescapeString from '../utils/unescapeString.js';
+
+
 /**
  * Represents a JSONParser class.
  * Provides methods to parse a token into corresponding JavaScript element.
@@ -27,7 +30,7 @@ class JSONParser {
 	 */
 	parse() {
 		if (this.tokens.length === 0) {
-			throw new Error('Empty JSON string');
+			ErrorHandling.throwError('Empty JSON string')
 		}
 		return this.parseValue();
 	}
@@ -40,7 +43,7 @@ class JSONParser {
 		const token = this.getToken();
 
 		if (token === undefined) {
-			throw new Error(
+			ErrorHandling.throwError(
 				`Unexpected token - encounter the end of the input unexpectedly`
 			);
 		}
@@ -69,7 +72,7 @@ class JSONParser {
 			return this.parseString();
 		}
 
-		throw new Error(`Unexpected token`);
+		ErrorHandling.throwError(`Unexpected token`);
 	}
 
 	/**
@@ -148,7 +151,7 @@ class JSONParser {
 		const token = this.getToken();
 		const numberElement = Number(token);
 		if (isNaN(numberElement)) {
-			throw new Error(`Invalid number`);
+			ErrorHandling.throwError(`Invalid number`);
 		}
 		this.position++;
 		return numberElement;
@@ -161,7 +164,7 @@ class JSONParser {
 	parseString() {
 		const token = this.getToken();
 		if (!this.isString(token)) {
-			throw new Error(`Invalid string`);
+			ErrorHandling.throwError(`Invalid string`);
 		} else {
 			this.position++;
 			return unescapeString(token);
@@ -177,10 +180,11 @@ class JSONParser {
 		this.position++;
 
 		while (this.getToken() !== '}') {
+			
 			const key = this.parseString();
 
 			if (this.getToken() !== ':') {
-				throw new Error('Invalid string - expected ":"');
+				ErrorHandling.throwError('Invalid string - expected ":"');
 			}
 			this.position++;
 			const value = this.parseValue();
@@ -189,9 +193,7 @@ class JSONParser {
 			// Check the next token in an object
 			if (this.getToken() === ',') {
 				this.position++;
-			} else if (this.getToken() !== '}') {
-				throw new Error('Unexpected token in object - expected "}"');
-			}
+			} 
 		}
 
 		this.position++;
@@ -214,7 +216,7 @@ class JSONParser {
 			if (this.getToken() === ',') {
 				this.position++;
 			} else if (this.getToken() !== ']') {
-				throw new Error('Unexpected token in array - expected "]"');
+				ErrorHandling.throwError('Unexpected token in array - expected "]"');
 			}
 		}
 
