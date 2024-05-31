@@ -23,4 +23,4 @@ class ErrorHandling extends Error{
     }
 }
 
-export default ErrorHandling;
+module.exports = ErrorHandling;

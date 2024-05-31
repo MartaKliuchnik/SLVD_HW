@@ -1,5 +1,5 @@
-import JSONParser from '../parsing-algorithm/jsonParser.js';
-import Tokenization from '../tokenization/tokenization.js';
+const JSONParser = require('../parsing-algorithm/jsonParser.js');
+const Tokenization = require('../tokenization/tokenization.js');
 
 /**
  * Parses a JSON-formatted string into a JavaScript object using regular expressions.
@@ -15,4 +15,4 @@ function myJSONParse(jsonString) {
 	return obj;
 }
 
-export default myJSONParse;
+module.exports = myJSONParse;

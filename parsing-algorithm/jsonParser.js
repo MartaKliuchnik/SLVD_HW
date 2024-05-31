@@ -1,6 +1,5 @@
-import ErrorHandling from '../error-handling/errorHandling.js';
-import unescapeString from '../utils/unescapeString.js';
-
+const ErrorHandling = require('../error-handling/errorHandling.js');
+const unescapeString = require('../utils/unescapeString.js');
 
 /**
  * Represents a JSONParser class.
@@ -225,4 +224,4 @@ class JSONParser {
 	}
 }
 
-export default JSONParser;
+module.exports = JSONParser;

@@ -32,7 +32,6 @@ function unescapeString(token) {
 		.replace(/\\(["\\/bfnrt]|u[0-9a-fA-F]{4})/g, (match, val) => {
 			
 			if (val.charAt(0) === 'u') {
-				console.log()
 				// Handle Unicode escape sequence
 				return unescapeUnicode(val.slice(1));
 			} else {
@@ -43,4 +42,4 @@ function unescapeString(token) {
 	return unescapedString;
 };
 
-export default unescapeString;
+module.exports = unescapeString;

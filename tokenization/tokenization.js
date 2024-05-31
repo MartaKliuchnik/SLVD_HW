@@ -1,6 +1,7 @@
-import ErrorHandling from '../error-handling/errorHandling.js';
-import { regexPattern } from '../utils/regexPattern.js';
-import { unquotedKeyPattern, invalidUnquotedStringPattern } from '../utils/unquotedPattern.js';
+const ErrorHandling = require('../error-handling/errorHandling.js');
+const regexPattern = require('../utils/regexPattern.js');
+const unquotedKeyPattern = require('../utils/unquotedKeyPattern.js');
+const invalidUnquotedStringPattern = require('../utils/invalidUnquotedStringPattern.js');
 
 /**
  * Represents a Tokenization class.
@@ -65,10 +66,9 @@ class Tokenization {
 	checkUnquotedStringMatch() {
 		let unquotedStringMatch;
 		while ((unquotedStringMatch = invalidUnquotedStringPattern.exec(this.jsonString)) !== null) {
-            console.log(unquotedStringMatch)
 			const invalidUnquotedString = unquotedStringMatch[1];
             const index = unquotedStringMatch.index + unquotedStringMatch[0].indexOf(invalidUnquotedString);
-            ErrorHandling.throwError(`Invalid unquoted string value "${invalidUnquotedString}"`, index);
+            ErrorHandling.throwError(`Invalid unquoted string value`, index);
         }
 	}
 
@@ -116,4 +116,4 @@ class Tokenization {
 	}
 }
 
-export default Tokenization;
+module.exports = Tokenization;
