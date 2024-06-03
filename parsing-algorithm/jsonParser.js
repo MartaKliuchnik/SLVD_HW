@@ -29,7 +29,7 @@ class JSONParser {
 	 */
 	parse() {
 		if (this.tokens.length === 0) {
-			ErrorHandling.throwError('Empty JSON string')
+			ErrorHandling.throwError('Empty JSON string');
 		}
 		return this.parseValue();
 	}
@@ -103,7 +103,7 @@ class JSONParser {
 	 * @returns {boolean} - Returns true if value is string, otherwise false.
 	 */
 	isString(token) {
-		return token.startsWith("") && token.endsWith("");
+		return token.startsWith('') && token.endsWith('');
 	}
 
 	/**
@@ -179,7 +179,6 @@ class JSONParser {
 		this.position++;
 
 		while (this.getToken() !== '}') {
-			
 			const key = this.parseString();
 
 			if (this.getToken() !== ':') {
@@ -192,7 +191,7 @@ class JSONParser {
 			// Check the next token in an object
 			if (this.getToken() === ',') {
 				this.position++;
-			} 
+			}
 		}
 
 		this.position++;

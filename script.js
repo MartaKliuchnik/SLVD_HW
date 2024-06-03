@@ -26,14 +26,30 @@ const newTokensArray = someTokens2.tokenize();
 
 // Parse the tokens
 const parser = new JSONParser(newTokensArray);
-const obj = parser.parse(); 
+const obj = parser.parse();
 
-console.log(obj.unicode) // B\nC 
-console.log(obj.info) // Hello\nWorld!
-console.log(obj.url) // https://example.com/path
+console.log(obj.unicode); // B\nC
+console.log(obj.info); // Hello\nWorld!
+console.log(obj.url); // https://example.com/path
 
-// Parse JSON-formatted strings into JavaScript objects using 
+// Parse JSON-formatted strings into JavaScript objects
 const myJSObject = myJSONParse(newString);
 console.log(myJSObject);
 
+// Define a JSON string representing an object with a property named "entered" containing a date formatted value
+const objDateJSON = '{ "entered": "2014-01-01T23:28:56.782Z" }';
 
+// Defines a custom reviver function
+// Parse date strings in JSON data (format ( "2022-01-01T12:00:00Z")) into JavaScript Date objects
+function dateReviver(_, value) {
+	const datePattern = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)$/;
+	if (typeof value === 'string' && datePattern.test(value)) {
+		return new Date(value);
+	}
+	return value;
+}
+
+// Parse JSON-formatted strings into JavaScript objects
+const objDateJSObject = myJSONParse(objDateJSON, dateReviver);
+console.log(typeof objDateJSObject.entered); // object
+console.log(objDateJSObject.entered instanceof Date); // true

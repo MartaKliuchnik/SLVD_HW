@@ -1,8 +1,9 @@
 // Define the specified regex pattern suitable for identifying JSON elements
 const regexPattern =
-/\{|\}|\[|\]|,|:|"(?:\\["\\/bfnrt]|\\u[0-9a-fA-F]{4}|[^"\\])*"|true|false|null|-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?/g;
+	/\{|\}|\[|\]|,|:|"(?:\\["\\/bfnrt]|\\u[0-9a-fA-F]{4}|[^"\\])*"|true|false|null|-?\d+(?:\.\d+)?(?:[eE][+\-]?\d+)?/g;
 
 module.exports = regexPattern;
+
 /**
  * The regular expressions to identify JSON elements (objects, arrays, strings, numbers, booleans, null) in the input string
  * \{|\} - checks the opening or closing curly brackets for objects
