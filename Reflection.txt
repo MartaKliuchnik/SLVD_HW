@@ -1,0 +1,23 @@
+1. In JSON, characters such as {, }, [, ], ,, and : are used to define the structure.
+To accurately match these characters in a regex, we must escape them with a backslash (\). 
+This ensures that the regex engine interprets them as literal characters rather than special symbols with specific functions.
+“escaping a character” - using a backslash \ to search for special characters (for example: '\{', '\}', '\.')
+
+2. When need search for any character among given use [] - are invaluable for matching any one of several characters.
+That character classes match exactly one character.
+[0-9a-fA-F] - matches any single hexadecimal digit.
+
+3. Lookahead assertion: (?=...), (?!...) - negates the assertion
+For seraching a certain patterns are not matched use (?!...)
+(?!true\b|false\b|null\b) - is a negative lookahead assertion that ensures the value is not one of the valid JSON literals (true, false, null)
+
+4. When matching whole words - use a word boundary \b
+true\b|false\b|null\b - This matches true, false, and null as whole words only.
+
+'trueboundary'.match(/true\b/); // true
+'true'.match(/true\b/); // null
+
+5. Quantifiers: difference between * ? +
+* (zero or more) - (?:\\["\\/bfnrt]|\\u[0-9a-fA-F]{4}|[^"\\])*" - allows for matching any number of occurrences, including none (matches a double-quoted string)
++ (one or more) - ([^\s,:\{\}\[\]]+) - matches one or more consecutive characters that are not whitespace or any of the specified special characters.
+? (zero or one) - (?:[eE][+\-]?\d+)? - creates an optional non-capturing group for matching the exponent part, plus or minus sign for one or more digits
